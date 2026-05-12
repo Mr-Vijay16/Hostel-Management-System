@@ -1,0 +1,41 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-5">
+
+        Complaint Details
+
+    </h1>
+
+    <div class="card p-4">
+
+        <h2>{{ complaint.title }}</h2>
+
+        <p>
+            <strong>Student:</strong>
+            {{ complaint.student }}
+        </p>
+
+        <p>
+            <strong>Description:</strong>
+            {{ complaint.description }}
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            {{ complaint.status }}
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            {{ complaint.complaint_date }}
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

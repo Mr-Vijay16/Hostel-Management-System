@@ -1,0 +1,72 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-4">
+
+        Fee List
+
+    </h1>
+
+    <table class="table table-bordered">
+
+        <tr>
+
+            <th>ID</th>
+            <th>Student</th>
+            <th>Amount</th>
+            <th>Payment Date</th>
+            <th>Status</th>
+            <th>Action</th>
+
+        </tr>
+
+        {% for fee in fees %}
+
+        <tr>
+
+            <td>{{ fee.id }}</td>
+
+            <td>{{ fee.student }}</td>
+
+            <td>{{ fee.amount }}</td>
+
+            <td>{{ fee.payment_date }}</td>
+
+            <td>{{ fee.status }}</td>
+
+            <td>
+
+                <a
+                    href="{% url 'update-fee' fee.id %}"
+                    class="btn btn-success"
+                >
+                    Update
+                </a>
+
+                <a
+                    href="{% url 'delete-fee' fee.id %}"
+                    class="btn btn-danger"
+                >
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    <a
+    href="{% url 'add-fee' %}"
+    class="btn btn-warning"
+>
+    Add Fee
+</a>
+
+</div>
+
+{% endblock %}

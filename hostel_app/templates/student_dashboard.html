@@ -1,0 +1,162 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-5">
+
+        Student Dashboard
+
+    </h1>
+
+    <div class="row">
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card bg-primary text-white">
+
+                <div class="card-body">
+
+                    <h2>
+
+                        {{ total_rooms }}
+
+                    </h2>
+
+                    <h5>
+
+                        Total Rooms
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card bg-success text-white">
+
+                <div class="card-body">
+
+                    <h2>
+
+                        {{ available_beds }}
+
+                    </h2>
+
+                    <h5>
+
+                        Available Beds
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card bg-warning">
+
+                <div class="card-body">
+
+                    <h2>
+
+                        {{ my_complaints }}
+
+                    </h2>
+
+                    <h5>
+
+                        My Complaints
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card bg-danger text-white">
+
+                <div class="card-body">
+
+                    <h2>
+
+                        {{ pending_complaints }}
+
+                    </h2>
+
+                    <h5>
+
+                        Pending Complaints
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card mt-4">
+
+        <div class="card-header bg-dark text-white">
+
+            My Room Allocation
+
+        </div>
+
+        <div class="card-body">
+
+            {% if allocation %}
+
+                <h5>
+
+                    Room Number:
+                    {{ allocation.room.room_number }}
+
+                </h5>
+
+                <h5>
+
+                    Room Type:
+                    {{ allocation.room.room_type }}
+
+                </h5>
+
+                <h5>
+
+                    Floor:
+                    {{ allocation.room.floor_number }}
+
+                </h5>
+
+            {% else %}
+
+                <h5 class="text-danger">
+
+                    No Room Allocated Yet
+
+                </h5>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

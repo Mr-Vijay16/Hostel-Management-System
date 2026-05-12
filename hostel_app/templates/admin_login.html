@@ -1,0 +1,61 @@
+{% extends 'master.html' %}
+
+{% block content %}
+        <div class="col-md-4">
+
+            <div class="card p-4 shadow border border-info">
+
+                <h2 class="text-center mb-4 text-info">
+                    Admin Login
+                </h2>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+
+                        <label>
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            name="username"
+                            class="form-control"
+                        >
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                        >
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-info w-100"
+                    >
+                        Admin Login
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}  

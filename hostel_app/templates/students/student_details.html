@@ -1,0 +1,45 @@
+{% extends "master.html" %}
+
+{% block title %}
+Student Details
+{% endblock title %}
+
+{% block content %}
+
+<h1 class="text-center mt-4 mb-4">
+    Student Details
+</h1>
+
+<div class="container">
+
+    <div class="card p-4 shadow">
+
+        <h3 class="mb-3">
+            {{ student.student_name }}
+        </h3>
+
+        <p>
+            <strong>Email:</strong>
+            {{ student.email }}
+        </p>
+
+        <p>
+            <strong>Phone Number:</strong>
+            {{ student.phone_number }}
+        </p>
+
+        <p>
+            <strong>Course:</strong>
+            {{ student.course }}
+        </p>
+
+        <p>
+            <strong>Year:</strong>
+            {{ student.year }}
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock content %}

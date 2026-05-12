@@ -1,0 +1,94 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-4">
+
+        Complaint List
+
+    </h1>
+
+    <table class="table table-bordered">
+
+        <tr>
+
+            <th>ID</th>
+            <th>Student</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+
+        </tr>
+
+        {% for complaint in complaints %}
+
+        <tr>
+
+            <td>{{ complaint.id }}</td>
+
+            <td>{{ complaint.student }}</td>
+
+            <td>{{ complaint.title }}</td>
+
+            <td>{{ complaint.status }}</td>
+
+            <td>{{ complaint.complaint_date }}</td>
+
+            <td>
+
+    <a
+        href="{% url 'complaint-details' complaint.id %}"
+        class="btn btn-primary"
+    >
+
+        View
+
+    </a>
+
+    {% if user.is_staff %}
+
+        <a
+            href="{% url 'update-complaint' complaint.id %}"
+            class="btn btn-success"
+        >
+
+            Update
+
+        </a>
+
+        <a
+            href="{% url 'delete-complaint' complaint.id %}"
+            class="btn btn-danger"
+        >
+
+            Delete
+
+        </a>
+
+    {% endif %}
+
+</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    {% if not user.is_staff %}
+
+<a
+    href="{% url 'add-complaint' %}"
+    class="btn btn-danger"
+>
+
+    Add Complaint
+
+</a>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,17 +1,81 @@
-{% extends "master.html" %}
-
-{% block title %}
-Homepage
-{% endblock title %}
+{% extends 'master.html' %}
 
 {% block content %}
 
 <div class="container mt-5">
 
-    <h1 class="text-center">
-        Hostel Management System
+    <h1 class="text-center mb-5">
+        Hostel Management Dashboard
     </h1>
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+            <div class="card bg-primary text-white mb-4">
+
+                <div class="card-body">
+
+                    <h3>{{ total_students }}</h3>
+
+                    <p>Total Students</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card bg-success text-white mb-4">
+
+                <div class="card-body">
+
+                    <h3>{{ total_rooms }}</h3>
+
+                    <p>Total Rooms</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card bg-warning text-dark mb-4">
+
+                <div class="card-body">
+
+                    <h3>{{ total_allocations }}</h3>
+
+                    <p>Total Allocations</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card bg-danger text-white mb-4">
+
+                <div class="card-body">
+
+                    <h3>{{ available_beds }}</h3>
+
+                    <p>Available Beds</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-{% endblock content %}
+{% endblock %}

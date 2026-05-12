@@ -1,0 +1,45 @@
+{% extends "master.html" %}
+
+{% block title %}
+Room Details
+{% endblock title %}
+
+{% block content %}
+
+<h1 class="text-center mt-4 mb-4">
+    Room Details
+</h1>
+
+<div class="container">
+
+    <div class="card p-4 shadow">
+
+        <h3 class="mb-3">
+            {{ room.room_number }}
+        </h3>
+
+        <p>
+            <strong>Room Type:</strong>
+            {{ room.room_type }}
+        </p>
+
+        <p>
+            <strong>Total Beds:</strong>
+            {{ room.total_beds }}
+        </p>
+
+        <p>
+            <strong>Available Beds:</strong>
+            {{ room.available_beds }}
+        </p>
+
+        <p>
+            <strong>Floor Number:</strong>
+            {{ room.floor_number }}
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock content %}

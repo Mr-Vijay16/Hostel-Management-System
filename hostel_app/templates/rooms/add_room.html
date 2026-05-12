@@ -1,0 +1,37 @@
+{% extends "master.html" %}
+
+{% block title %}
+Add Room
+{% endblock title %}
+
+{% block content %}
+
+<h1 class="text-center mt-4 mb-4">
+    Add Room
+</h1>
+
+<div class="container">
+
+    <form action="" method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        {% if user.is_staff %}
+
+<a
+    href="{% url 'add-room' %}"
+    class="btn btn-success"
+>
+
+    Add Room
+
+</a>
+
+{% endif %}
+    </form>
+
+</div>
+
+{% endblock content %}

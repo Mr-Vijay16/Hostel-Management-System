@@ -1,0 +1,27 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center">
+        Add Fee
+    </h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button class="btn btn-primary">
+
+            Add Fee
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

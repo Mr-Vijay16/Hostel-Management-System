@@ -1,0 +1,94 @@
+{% extends "master.html" %}
+
+{% block title %}
+Allocation List
+{% endblock title %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h1>
+
+        Allocation List
+
+    </h1>
+
+    <a
+        href="{% url 'allocate-room' %}"
+        class="btn btn-primary"
+    >
+
+        Add Allocation
+
+    </a>
+
+</div>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>ID</th>
+                <th>Student</th>
+                <th>Room</th>
+                <th>Date</th>
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for allocation in allocations %}
+
+            <tr>
+
+                <td>{{ allocation.id }}</td>
+
+                <td>{{ allocation.student }}</td>
+
+                <td>{{ allocation.room }}</td>
+
+                <td>{{ allocation.allocation_date }}</td>
+                <td>
+
+    <a
+        href="{% url 'allocation-details' allocation.id %}"
+        class="btn btn-primary btn-sm"
+    >
+        View
+    </a>
+
+    <a
+        href="{% url 'update-allocation' allocation.id %}"
+        class="btn btn-success btn-sm"
+    >
+        Update
+    </a>
+
+    <a
+        href="{% url 'delete-allocation' allocation.id %}"
+        class="btn btn-danger btn-sm"
+    >
+        Delete
+    </a>
+
+</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock content %}
