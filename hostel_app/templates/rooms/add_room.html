@@ -20,14 +20,12 @@ Add Room
 
         {% if user.is_staff %}
 
-<a
-    href="{% url 'add-room' %}"
+<button
+    type="submit"
     class="btn btn-success"
 >
-
     Add Room
-
-</a>
+</button>
 
 {% endif %}
     </form>

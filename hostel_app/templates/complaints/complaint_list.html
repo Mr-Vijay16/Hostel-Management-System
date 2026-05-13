@@ -15,7 +15,6 @@
         <tr>
 
             <th>ID</th>
-            <th>Student</th>
             <th>Title</th>
             <th>Status</th>
             <th>Date</th>
@@ -29,65 +28,68 @@
 
             <td>{{ complaint.id }}</td>
 
-            <td>{{ complaint.student }}</td>
-
             <td>{{ complaint.title }}</td>
 
             <td>{{ complaint.status }}</td>
 
-            <td>{{ complaint.complaint_date }}</td>
+            <td>{{ complaint.created_at|date:"F d, Y" }}</td>
 
             <td>
 
-    <a
-        href="{% url 'complaint-details' complaint.id %}"
-        class="btn btn-primary"
-    >
+                <a
+                    href="{% url 'complaint-details' complaint.id %}"
+                    class="btn btn-primary btn-sm"
+                >
+                    View
+                </a>
 
-        View
+                {% if user.is_staff %}
 
-    </a>
+                <a
+                    href="{% url 'update-complaint' complaint.id %}"
+                    class="btn btn-success btn-sm"
+                >
+                    Update
+                </a>
 
-    {% if user.is_staff %}
+                <a
+                    href="{% url 'delete-complaint' complaint.id %}"
+                    class="btn btn-danger btn-sm"
+                >
+                    Delete
+                </a>
 
-        <a
-            href="{% url 'update-complaint' complaint.id %}"
-            class="btn btn-success"
-        >
+                {% endif %}
 
-            Update
+                {% if not user.is_staff and complaint.status == "Pending" %}
 
-        </a>
+                <a
+                    href="{% url 'withdraw-complaint' complaint.id %}"
+                    class="btn btn-warning btn-sm"
+                >
+                    Withdraw
+                </a>
 
-        <a
-            href="{% url 'delete-complaint' complaint.id %}"
-            class="btn btn-danger"
-        >
+                {% endif %}
 
-            Delete
+            </td>
 
-        </a>
-
-    {% endif %}
-
-</td>
         </tr>
 
         {% endfor %}
 
     </table>
+
     {% if not user.is_staff %}
 
-<a
-    href="{% url 'add-complaint' %}"
-    class="btn btn-danger"
->
+    <a
+        href="{% url 'add-complaint' %}"
+        class="btn btn-danger"
+    >
+        Add Complaint
+    </a>
 
-    Add Complaint
-
-</a>
-
-{% endif %}
+    {% endif %}
 
 </div>
 

@@ -85,6 +85,12 @@ path(
 ),
 
 path(
+    "withdraw-complaint/<int:id>/",
+    views.withdraw_complaint,
+    name="withdraw-complaint"
+),
+
+path(
     "delete-complaint/<int:id>/",
     views.delete_complaint,
     name="delete-complaint"

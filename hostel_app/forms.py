@@ -54,13 +54,73 @@ class StudentForm(forms.ModelForm):
         model = Student
 
         fields = [
-            "student_name",
-            "email",
-            "phone_number",
-            "course",
-            "year",
+
+            'student_id',
+            'student_name',
+            'email',
+            'phone_number',
+            'course',
+            'year'
+
         ]
 
+        widgets = {
+
+            'student_id': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter Student ID'
+                }
+            ),
+
+            'student_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter Student Name'
+                }
+            ),
+
+            'email': forms.EmailInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter Email'
+                }
+            ),
+
+            'phone_number': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter Phone Number'
+                }
+            ),
+
+            'course': forms.Select(
+    choices=[
+
+         ('', 'Select Course'),
+
+        ('MCA', 'MCA'),
+        ('MBA', 'MBA'),
+
+    ],
+    attrs={
+        'class': 'form-control'
+    }
+),
+            'year': forms.Select(
+    choices=[
+
+        ('', 'Select Year'),
+
+        (1, '1st Year'),
+        (2, '2nd Year'),
+
+    ],
+    attrs={
+        'class': 'form-control'
+    }
+),
+        }
 
 class RoomForm(forms.ModelForm):
 
@@ -76,6 +136,43 @@ class RoomForm(forms.ModelForm):
             "floor_number",
         ]
 
+        widgets = {
+
+            "room_number": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Room Number"
+                }
+            ),
+
+            "room_type": forms.Select(
+                attrs={
+                    "class": "form-control"
+                }
+            ),
+
+            "total_beds": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Total Beds"
+                }
+            ),
+
+            "available_beds": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Available Beds"
+                }
+            ),
+
+            "floor_number": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Floor Number"
+                }
+            ),
+
+        }
 
 class RoomAllocationForm(forms.ModelForm):
 
@@ -101,9 +198,35 @@ class FeeForm(forms.ModelForm):
 
             "payment_date": forms.DateInput(
                 attrs={
-                    "type": "date"
+                    "type": "date",
+                    "class": "form-control"
                 }
-            )
+            ),
+
+            "status": forms.Select(
+                choices=[
+
+                    ("pending", "Pending"),
+                    ("paid", "Paid"),
+
+                ],
+                attrs={
+                    "class": "form-control"
+                }
+            ),
+
+            "student": forms.Select(
+                attrs={
+                    "class": "form-control"
+                }
+            ),
+
+            "amount": forms.NumberInput(
+                attrs={
+                    "class": "form-control"
+                }
+            ),
+
         }
 
 

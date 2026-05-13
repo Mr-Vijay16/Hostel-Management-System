@@ -1,0 +1,30 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1>Allocation Details</h1>
+
+    <table class="table table-bordered">
+
+        <tr>
+            <th>Student</th>
+            <td>{{ allocation.student }}</td>
+        </tr>
+
+        <tr>
+            <th>Room</th>
+            <td>{{ allocation.room }}</td>
+        </tr>
+
+        <tr>
+            <th>Date</th>
+            <td>{{ allocation.allocation_date }}</td>
+        </tr>
+
+    </table>
+
+</div>
+
+{% endblock %}

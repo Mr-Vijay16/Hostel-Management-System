@@ -17,7 +17,12 @@ class StudentAccount(models.Model):
     def __str__(self):
 
         return self.user.username
+
 class Student(models.Model):
+
+    student_id = models.CharField(
+        max_length=20
+    )
 
     student_name = models.CharField(max_length=100)
 
@@ -31,10 +36,17 @@ class Student(models.Model):
 
     def __str__(self):
 
-        return f"{self.id} - {self.student_name}"
+        return self.student_name
 
 
 class Room(models.Model):
+
+    ROOM_TYPES = [
+
+        ('AC', 'AC'),
+        ('Non-AC', 'Non-AC'),
+
+    ]
 
     room_number = models.CharField(
         max_length=20,
@@ -42,7 +54,8 @@ class Room(models.Model):
     )
 
     room_type = models.CharField(
-        max_length=50
+        max_length=20,
+        choices=ROOM_TYPES
     )
 
     total_beds = models.IntegerField()

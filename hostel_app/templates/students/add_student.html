@@ -6,26 +6,82 @@ Add Student
 
 {% block content %}
 
-<h1 class="text-center mt-4 mb-4">
-    Add Student
-</h1>
+<style>
 
-<div class="container">
+    .form-control {
 
-    <form action="" method="POST">
+        height: 42px;
 
-        {% csrf_token %}
+        font-size: 15px;
 
-        {{ form.as_p }}
+    }
 
-        <button
-            type="submit"
-            class="btn btn-primary"
-        >
-            Add Student
-        </button>
+    label {
 
-    </form>
+        font-weight: 500;
+
+        margin-bottom: 4px;
+
+    }
+
+    .mb-3 {
+
+        margin-bottom: 14px !important;
+
+    }
+
+    .student-card {
+
+        border-radius: 12px;
+
+    }
+
+    .student-title {
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+}       
+
+</style>
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-4">
+
+            <div class="card shadow student-card p-4">
+
+                <h1 class="text-center mb-4 student-title">
+
+                    Add Student
+
+                </h1>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                    >
+
+                        Add Student
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

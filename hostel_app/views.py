@@ -21,6 +21,7 @@ from .models import Student
 from .models import StudentAccount
 
 
+
 from django.contrib.auth import (
     authenticate,
     login,
@@ -373,20 +374,23 @@ def add_room(request):
 
             form.save()
 
-            return redirect('room-list') 
+            return redirect('room-list')
 
-    form = RoomForm()
+        else:
 
-    context = {
-        'form': form
-    }
+            print(form.errors)
+
+    else:
+
+        form = RoomForm()
 
     return render(
         request,
         'rooms/add_room.html',
-        context
+        {
+            'form': form
+        }
     )
-
 
 def room_list(request):
 
@@ -511,7 +515,7 @@ def allocate_room(request):
 
     return render(
         request,
-        "allocation/allocate_room.html",
+        "allocations/allocate_room.html",
         context
     )
 
@@ -519,15 +523,15 @@ def allocate_room(request):
 
 def allocation_list(request):
 
-    allocations = RoomAllocation.objects.all()
+    allocation = RoomAllocation.objects.all()
 
     context = {
-        "allocations": allocations
+        "allocations": allocation
     }
 
     return render(
         request,
-        "allocation/allocation_list.html",
+        "allocations/allocation_list.html",
         context
     )
 
@@ -685,22 +689,15 @@ def add_complaint(request):
 
 def complaint_list(request):
 
-    if request.user.is_staff:
+    complaints = Complaint.objects.all()
 
-        complaints = Complaint.objects.all()
-
-    else:
-
-        student_account = StudentAccount.objects.get(
-            user=request.user
-        )
-
-        complaints = Complaint.objects.filter(
-            student=student_account.student
-        )
+    student_account = StudentAccount.objects.filter(
+        user=request.user
+    ).first()
 
     context = {
-        "complaints": complaints
+        "complaints": complaints,
+        "student_account": student_account
     }
 
     return render(
@@ -775,6 +772,16 @@ def update_complaint(request, id):
         "complaints/update_complaint.html",
         context
     )
+
+def withdraw_complaint(request, id):
+
+    complaint = Complaint.objects.get(id=id)
+
+    if complaint.status == "Pending":
+
+        complaint.delete()
+
+    return redirect("complaint-list")
 
 
 def delete_complaint(request, id):
