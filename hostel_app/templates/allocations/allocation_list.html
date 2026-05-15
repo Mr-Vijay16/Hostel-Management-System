@@ -32,9 +32,10 @@ Allocation List
         <thead class="table-dark">
 
             <tr>
+                <th>Sl.NO</th>
 
                 <th>Student ID</th>
-                <th>Student</th>
+                <th>Student Name</th>
                 <th>Room</th>
                 <th>Date</th>
                 <th>Action</th>
@@ -45,9 +46,10 @@ Allocation List
 
         <tbody>
 
-            {% for allocation in allocations %}
+            {% for allocation in page_obj %}
 
             <tr>
+                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
 
                 <td>{{ allocation.student.student_id }}</td>
 
@@ -88,6 +90,53 @@ Allocation List
         </tbody>
 
     </table>
+    <div class="text-center mt-4">
+
+    {% if page_obj.has_previous %}
+
+        <a
+            href="?page=1"
+            class="btn btn-dark"
+        >
+            First
+        </a>
+
+        <a
+            href="?page={{ page_obj.previous_page_number }}"
+            class="btn btn-primary"
+        >
+            Previous
+        </a>
+
+    {% endif %}
+
+    <span class="mx-3 fw-bold">
+
+        Page {{ page_obj.number }}
+        of
+        {{ page_obj.paginator.num_pages }}
+
+    </span>
+
+    {% if page_obj.has_next %}
+
+        <a
+            href="?page={{ page_obj.next_page_number }}"
+            class="btn btn-primary"
+        >
+            Next
+        </a>
+
+        <a
+            href="?page={{ page_obj.paginator.num_pages }}"
+            class="btn btn-dark"
+        >
+            Last
+        </a>
+
+    {% endif %}
+
+</div>
 
 </div>
 

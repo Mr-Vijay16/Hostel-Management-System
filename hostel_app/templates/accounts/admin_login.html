@@ -1,0 +1,129 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row justify-content-center align-items-center ">
+
+        <div class="col-md-5">
+
+            <!-- LOGIN CARD -->
+
+            <div class="card shadow-lg border-0 rounded-4 p-5">
+
+                <h1 class="text-center text-info fw-bold mb-4">
+
+                    Admin Login
+
+                </h1>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <!-- USERNAME -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+
+                            Username
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="username"
+                            class="form-control form-control-lg"
+                            placeholder="Enter Username"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- PASSWORD -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+
+                            Password
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="form-control form-control-lg"
+                                placeholder="Enter Password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                onclick="togglePassword()"
+                            >
+
+                                Show
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- LOGIN BUTTON -->
+
+                    <div class="d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-info btn-lg text-white fw-bold"
+                        >
+
+                            Admin Login
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PASSWORD TOGGLE -->
+
+<script>
+
+function togglePassword() {
+
+    let password = document.getElementById("password");
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+    }
+
+    else {
+
+        password.type = "password";
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

@@ -19,6 +19,19 @@ from django.contrib.auth.models import User
 from .forms import StudentSignupForm
 from .models import Student
 from .models import StudentAccount
+from django.core.paginator import Paginator
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from rest_framework.decorators import api_view
+
+from rest_framework.response import Response
+
+from rest_framework import status
+
+from .serializers import StudentSerializer
+
+from .serializers import StudentSerializer, RoomSerializer
 
 
 
@@ -31,63 +44,88 @@ from django.contrib.auth import (
 
 def student_signup(request):
 
-    form = StudentSignupForm()
-
     if request.method == "POST":
 
-        form = StudentSignupForm(request.POST)
+        username = request.POST.get("username")
 
-        if form.is_valid():
+        email = request.POST.get("email")
 
-            user = form.save()
+        password = request.POST.get("password")
 
-            student = Student.objects.create(
+        confirm_password = request.POST.get("confirm_password")
 
-                student_name=user.username,
+        if password != confirm_password:
 
-                email=form.cleaned_data["email"],
-
-                phone_number="0000000000",
-
-                course="Not Assigned",
-
-                year=1
+            messages.error(
+                request,
+                "Passwords do not match"
             )
 
-            StudentAccount.objects.create(
+            return redirect("student-signup")
 
-                user=user,
+        if User.objects.filter(username=username).exists():
 
-                student=student
+            messages.error(
+                request,
+                "Username already exists"
             )
 
-            login(request, user)
+            return redirect("student-signup")
 
-            return redirect("student-dashboard")
+        user = User.objects.create_user(
 
-        else:
+            username=username,
 
-            print(form.errors)
+            email=email,
 
-        
+            password=password
+        )
 
-    context = {
+        student = Student.objects.create(
 
-        "form": form
-    }
+            student_name=username,
+
+            email=email,
+
+            phone_number="0000000000",
+
+            course="Not Assigned",
+
+            year=1
+        )
+
+        StudentAccount.objects.create(
+
+            user=user,
+
+            student=student
+        )
+
+        messages.success(
+            request,
+            "Student account created successfully"
+        )
+
+        return redirect("student-login")
 
     return render(
         request,
-        "student_signup.html",
-        context
+        "accounts/student_signup.html"
     )
-
-
 def student_dashboard(request):
 
-    student_account = StudentAccount.objects.get(
+    student_account = StudentAccount.objects.filter(
         user=request.user
-    )
+    ).first()
+
+    if not student_account:
+
+        messages.error(
+            request,
+            "Student account not found"
+        )
+
+        return redirect("student-login")
 
     student = student_account.student
 
@@ -95,7 +133,7 @@ def student_dashboard(request):
 
     available_beds = Room.objects.aggregate(
         total=models.Sum("available_beds")
-    )["total"]
+    )["total"] or 0
 
     my_complaints = Complaint.objects.filter(
         student=student
@@ -126,12 +164,16 @@ def student_dashboard(request):
 
     return render(
         request,
-        "student_dashboard.html",
+        "dashboard/student_dashboard.html",
         context
     )
 
 
 def student_login(request):
+
+    if request.user.is_authenticated:
+
+        return redirect("student-dashboard")
 
     if request.method == "POST":
 
@@ -147,21 +189,59 @@ def student_login(request):
 
         if user is not None and not user.is_staff:
 
-            login(request, user)
+            try:
 
-            return redirect("homepage")
+                StudentAccount.objects.get(user=user)
+
+                login(request, user)
+
+                messages.success(
+                    request,
+                    "Student Login Successful"
+                )
+
+                return redirect("student-dashboard")
+
+            except StudentAccount.DoesNotExist:
+
+                messages.error(
+                    request,
+                    "Student account not found"
+                )
 
         else:
 
             messages.error(
                 request,
-                "Student access only"
+                "Invalid Username or Password"
             )
 
     return render(
         request,
-        "student_login.html"
+        "accounts/student_login.html"
     )
+
+def logout_view(request):
+
+    is_admin = request.user.is_staff
+
+    logout(request)
+
+    if is_admin:
+
+        messages.success(
+            request,
+            "Admin Logged Out Successfully"
+        )
+
+    else:
+
+        messages.success(
+            request,
+            "Student Logged Out Successfully"
+        )
+
+    return redirect("homepage")
 
 def admin_login(request):
 
@@ -181,6 +261,11 @@ def admin_login(request):
 
             login(request, user)
 
+            messages.success(
+                request,
+                "Admin Login Successful"
+            )
+
             return redirect("admin-dashboard")
 
         else:
@@ -191,26 +276,31 @@ def admin_login(request):
             )
 
     return render(
-        request,
-        "admin_login.html"
-    )
+    request,
+    "accounts/admin_login.html"
+)
+
+
+
+
+
 def admin_dashboard(request):
 
-    total_students = Student.objects.count()
+    total_students = StudentAccount.objects.count()
 
     total_rooms = Room.objects.count()
 
     total_allocations = RoomAllocation.objects.count()
+
+    available_beds = Room.objects.aggregate(
+        total=models.Sum("available_beds")
+    )["total"] or 0
 
     total_complaints = Complaint.objects.count()
 
     pending_complaints = Complaint.objects.filter(
         status="Pending"
     ).count()
-
-    available_beds = Room.objects.aggregate(
-        total=models.Sum("available_beds")
-    )["total"]
 
     context = {
 
@@ -220,17 +310,17 @@ def admin_dashboard(request):
 
         "total_allocations": total_allocations,
 
+        "available_beds": available_beds,
+
         "total_complaints": total_complaints,
 
         "pending_complaints": pending_complaints,
-
-        "available_beds": available_beds
 
     }
 
     return render(
         request,
-        "admin_dashboard.html",
+        "dashboard/admin_dashboard.html",
         context
     )
 
@@ -274,7 +364,12 @@ def add_student(request):
 
             form.save()
 
-            return redirect('student-list')
+            messages.success(
+                request,
+                "Student Added Successfully"
+            )
+
+            return redirect("student-list")
 
     form = StudentForm()
 
@@ -291,7 +386,37 @@ def add_student(request):
 
 def student_list(request):
 
-    students = Student.objects.all()
+    students_list = Student.objects.all()
+
+    search = request.GET.get('search')
+
+    course = request.GET.get('course')
+
+    year = request.GET.get('year')
+
+    if search:
+
+        students_list = students_list.filter(
+            student_name__icontains=search
+        )
+
+    if course:
+
+        students_list = students_list.filter(
+            course=course
+        )
+
+    if year:
+
+        students_list = students_list.filter(
+            year=year
+        )
+
+    paginator = Paginator(students_list, 5)
+
+    page_number = request.GET.get('page')
+
+    students = paginator.get_page(page_number)
 
     context = {
         "students": students
@@ -396,13 +521,43 @@ def room_list(request):
 
     rooms = Room.objects.all()
 
+    search = request.GET.get('search')
+
+    room_type = request.GET.get('room_type')
+
+    floor = request.GET.get('floor')
+
+    if search:
+
+        rooms = rooms.filter(
+            room_number__icontains=search
+        )
+
+    if room_type:
+
+        rooms = rooms.filter(
+            room_type=room_type
+        )
+
+    if floor:
+
+        rooms = rooms.filter(
+            floor_number=floor
+        )
+
+    floors = Room.objects.values_list(
+        'floor_number',
+        flat=True
+    ).distinct()
+
     context = {
-        'rooms': rooms
+        "rooms": rooms,
+        "floors": floors
     }
 
     return render(
         request,
-        'rooms/room_list.html',
+        "rooms/room_list.html",
         context
     )
 
@@ -566,11 +721,7 @@ def login_view(request):
         request,
         "login.html"
     )
-def logout_view(request):
 
-    logout(request)
-
-    return redirect("homepage")
 
 
 def add_fee(request):
@@ -602,6 +753,12 @@ def add_fee(request):
 def fee_list(request):
 
     fees = Fee.objects.all()
+
+    status = request.GET.get('status')
+
+    if status:
+
+        fees = fees.filter(status=status)
 
     context = {
         "fees": fees
@@ -691,13 +848,16 @@ def complaint_list(request):
 
     complaints = Complaint.objects.all()
 
-    student_account = StudentAccount.objects.filter(
-        user=request.user
-    ).first()
+    status = request.GET.get('status')
+
+    if status:
+
+        complaints = complaints.filter(
+            status=status
+        )
 
     context = {
-        "complaints": complaints,
-        "student_account": student_account
+        "complaints": complaints
     }
 
     return render(
@@ -705,7 +865,6 @@ def complaint_list(request):
         "complaints/complaint_list.html",
         context
     )
-
 
 def complaint_details(request, id):
 
@@ -864,3 +1023,229 @@ def delete_allocation(request, id):
     allocation.delete()
 
     return redirect("allocation-list")
+
+def allocation_list(request):
+
+    allocations = RoomAllocation.objects.all()
+
+    student = request.GET.get("student")
+    room = request.GET.get("room")
+    date = request.GET.get("date")
+
+    if student:
+
+        allocations = allocations.filter(
+            student__name__icontains=student
+        )
+
+    if room:
+
+        allocations = allocations.filter(
+            room__room_number__icontains=room
+        )
+
+    if date:
+
+        allocations = allocations.filter(
+            allocated_date=date
+        )
+
+    paginator = Paginator(allocations, 5)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj
+    }
+
+    return render(
+        request,
+        "allocations/allocation_list.html",
+        context
+    )
+
+# ------------------------------------------------------------
+
+#API's
+
+# ------------------------------------------------------------
+
+@api_view(["GET", "POST"])
+def student_api(request):
+
+    if request.method == "GET":
+
+        students = Student.objects.all()
+
+        serializer = StudentSerializer(
+            students,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+
+        serializer = StudentSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+
+#Single Student API
+
+@api_view(["GET", "PUT", "DELETE"])
+def student_detail_api(request, id):
+
+    try:
+
+        student = Student.objects.get(id=id)
+
+    except Student.DoesNotExist:
+
+        return Response(
+            {
+                "error": "Student not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == "GET":
+
+        serializer = StudentSerializer(student)
+
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+
+        serializer = StudentSerializer(
+            student,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    elif request.method == "DELETE":
+
+        student.delete()
+
+        return Response(
+            {
+                "message": "Student deleted successfully"
+            },
+            status=status.HTTP_200_OK
+        )
+    
+# ------------------------------------------------------------
+#Room API's
+# ------------------------------------------------------------
+
+@api_view(["GET", "POST"])
+def room_api(request):
+
+    if request.method == "GET":
+
+        rooms = Room.objects.all()
+
+        serializer = RoomSerializer(
+            rooms,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+
+        serializer = RoomSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+#single Room API
+
+@api_view(["GET", "PUT", "DELETE"])
+def room_detail_api(request, id):
+
+    try:
+
+        room = Room.objects.get(id=id)
+
+    except Room.DoesNotExist:
+
+        return Response(
+            {
+                "error": "Room not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == "GET":
+
+        serializer = RoomSerializer(room)
+
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+
+        serializer = RoomSerializer(room,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    elif request.method == "DELETE":
+
+        room.delete()
+
+        return Response(
+            {
+                "message": "Room deleted successfully"
+            },
+            status=status.HTTP_200_OK
+        )

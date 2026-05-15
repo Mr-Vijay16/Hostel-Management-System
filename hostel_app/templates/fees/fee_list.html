@@ -9,6 +9,45 @@
         Fee List
 
     </h1>
+    <form method="GET" class="row mb-4">
+
+    <div class="col-md-4">
+
+        <select
+            name="status"
+            class="form-control"
+        >
+
+            <option value="">
+                All Status
+            </option>
+
+            <option value="pending">
+                Pending
+            </option>
+
+            <option value="paid">
+                Paid
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <button
+            type="submit"
+            class="btn btn-dark w-100"
+        >
+
+            Filter
+
+        </button>
+
+    </div>
+
+</form>
 
     <table class="table table-bordered">
 
@@ -37,7 +76,23 @@
 
             <td>{{ fee.payment_date }}</td>
 
-            <td>{{ fee.status }}</td>
+            <td>
+
+    {% if fee.status == "paid" %}
+
+        <span class="badge bg-primary">
+            Paid
+        </span>
+
+    {% else %}
+
+        <span class="badge bg-warning">
+            Pending
+        </span>
+
+    {% endif %}
+
+</td>
 
             <td>
 

@@ -1,0 +1,115 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-5 fw-bold">
+
+        Admin Dashboard
+
+    </h1>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+
+            <div class="card bg-primary text-white shadow border-0">
+
+                <div class="card-body">
+
+                    <h1>{{ total_students }}</h1>
+
+                    <h3>Total Students</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-success text-white shadow border-0">
+
+                <div class="card-body">
+
+                    <h1>{{ total_rooms }}</h1>
+
+                    <h3>Total Rooms</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-danger text-white shadow border-0">
+
+                <div class="card-body">
+
+                    <h1>{{ available_beds }}</h1>
+
+                    <h3>Available Beds</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-warning shadow border-0">
+
+                <div class="card-body">
+
+                    <h1>{{ total_allocations }}</h1>
+
+                    <h3>Total Allocations</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-dark text-white shadow border-0">
+
+                <div class="card-body">
+
+                    <h1>{{ total_complaints }}</h1>
+
+                    <h3>Total Complaints</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-info text-white shadow border-0">
+
+                <div class="card-body">
+
+                    <h1>{{ pending_complaints }}</h1>
+
+                    <h3>Pending Complaints</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

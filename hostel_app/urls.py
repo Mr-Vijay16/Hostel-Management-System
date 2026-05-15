@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 
+
 urlpatterns = [
     path('', views.homepage, name='homepage'),
 
@@ -22,6 +23,7 @@ path(
     views.admin_login,
     name="admin-login"
 ),
+
     path('add-student/',views.add_student,name='add-student'),
     path('student-list/',views.student_list, name='student-list'),
     path('update-student/<int:id>/',views.update_student,name='update-student'),
@@ -33,8 +35,6 @@ path(
     path("update-room/<int:id>/",views.update_room,name="update-room"),
     path("delete-room/<int:id>/",views.delete_room,name="delete-room"),
     path("allocate-room/",views.allocate_room,name="allocate-room"),
-    path("allocation-list/",views.allocation_list,name="allocation-list"),
-    path("login/",views.login_view,name="login"),
     path("logout/",views.logout_view,name="logout"),
     path(
     "add-fee/",
@@ -118,6 +118,11 @@ path(
     name="delete-allocation"
 ),
 path(
+    "allocation-list/",
+    views.allocation_list,
+    name="allocation-list"
+),
+path(
     "student-dashboard/",
     views.student_dashboard,
     name="student-dashboard"
@@ -127,4 +132,6 @@ path(
     views.admin_dashboard,
     name="admin-dashboard"
 ),
+
+
 ]

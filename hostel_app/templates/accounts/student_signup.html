@@ -1,0 +1,224 @@
+{% extends 'master.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-5">
+
+            <!-- SIGNUP CARD -->
+
+            <div
+                class="card shadow-lg border-0 rounded-4 p-4"
+                style="background-color: white;"
+            >
+
+                <h1 class="text-center mb-4 fw-bold">
+
+                    Student Signup
+
+                </h1>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <!-- USERNAME -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Username
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="username"
+                            class="form-control form-control-lg"
+                            placeholder="Enter Username"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- EMAIL -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Email
+
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control form-control-lg"
+                            placeholder="Enter Email"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- PASSWORD -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Password
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="form-control form-control-lg"
+                                placeholder="Enter Password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                onclick="togglePassword()"
+                            >
+
+                                Show
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+
+                            Confirm Password
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="password"
+                                name="confirm_password"
+                                id="confirm_password"
+                                class="form-control form-control-lg"
+                                placeholder="Confirm Password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                onclick="toggleConfirmPassword()"
+                            >
+
+                                Show
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- SIGNUP BUTTON -->
+
+                    <div class="d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-lg"
+                        >
+
+                            Signup
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- LOGIN LINK -->
+
+                <p class="text-center mt-4 mb-0">
+
+                    Already have an account?
+
+                    <a
+                        href="{% url 'student-login' %}"
+                        class="text-decoration-none fw-bold"
+                    >
+
+                        Login
+
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PASSWORD TOGGLE SCRIPT -->
+
+<script>
+
+function togglePassword() {
+
+    let password = document.getElementById("password");
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+    }
+
+    else {
+
+        password.type = "password";
+
+    }
+
+}
+
+function toggleConfirmPassword() {
+
+    let password = document.getElementById("confirm_password");
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+    }
+
+    else {
+
+        password.type = "password";
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

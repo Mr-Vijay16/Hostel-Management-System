@@ -5,10 +5,50 @@
 <div class="container mt-5">
 
     <h1 class="text-center mb-4">
-
         Complaint List
-
     </h1>
+
+    <form method="GET" class="row mb-4">
+
+        <div class="col-md-4">
+
+            <select
+                name="status"
+                class="form-control"
+            >
+
+                <option value="">
+                    All Complaints
+                </option>
+
+                <option value="Pending">
+                    Pending
+                </option>
+
+                <option value="In Progress">
+                    In Progress
+                </option>
+
+                <option value="Resolved">
+                    Resolved
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="col-md-2">
+
+            <button
+                type="submit"
+                class="btn btn-dark w-100"
+            >
+                Filter
+            </button>
+
+        </div>
+
+    </form>
 
     <table class="table table-bordered">
 
@@ -30,7 +70,29 @@
 
             <td>{{ complaint.title }}</td>
 
-            <td>{{ complaint.status }}</td>
+            <td>
+
+                {% if complaint.status == "Resolved" %}
+
+                    <span class="badge bg-success">
+                        Resolved
+                    </span>
+
+                {% elif complaint.status == "In Progress" %}
+
+                    <span class="badge bg-warning text-dark">
+                        In Progress
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-danger">
+                        Pending
+                    </span>
+
+                {% endif %}
+
+            </td>
 
             <td>{{ complaint.created_at|date:"F d, Y" }}</td>
 
@@ -71,6 +133,21 @@
                 </a>
 
                 {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td
+                colspan="5"
+                class="text-center text-danger fw-bold"
+            >
+
+                No Complaints Found
 
             </td>
 
