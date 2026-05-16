@@ -25,6 +25,10 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 
+from .models import RoomAllocation
+
+from .serializers import RoomAllocationSerializer
+
 from rest_framework.response import Response
 
 from rest_framework import status
@@ -33,13 +37,24 @@ from .serializers import StudentSerializer
 
 from .serializers import StudentSerializer, RoomSerializer
 
+from .serializers import ComplaintSerializer
+
+from .models import Fee
+
+from .serializers import FeeSerializer
 
 
-from django.contrib.auth import (
-    authenticate,
-    login,
-    logout
-)
+from django.contrib.auth import authenticate, login, logout
+
+from rest_framework.decorators import api_view
+
+from rest_framework.response import Response
+
+from rest_framework import status
+
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
 
 
 def student_signup(request):
@@ -1249,3 +1264,406 @@ def room_detail_api(request, id):
             },
             status=status.HTTP_200_OK
         )
+
+@api_view(["GET", "POST"])
+def complaint_api(request):
+
+    if request.method == "GET":
+
+        complaints = Complaint.objects.all()
+
+        status_filter = request.GET.get("status")
+
+        if status_filter:
+
+            complaints = complaints.filter(
+                status=status_filter
+            )
+
+        serializer = ComplaintSerializer(
+            complaints,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+
+        serializer = ComplaintSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+#single Complaint API
+
+@api_view(["GET", "PUT", "DELETE"])
+def complaint_detail_api(request, id):
+
+    try:
+
+        complaint = Complaint.objects.get(id=id)
+
+    except Complaint.DoesNotExist:
+
+        return Response(
+            {
+                "error": "Complaint not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == "GET":
+
+        serializer = ComplaintSerializer(complaint)
+
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+
+        serializer = ComplaintSerializer(
+            complaint,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    elif request.method == "DELETE":
+
+        complaint.delete()
+
+        return Response(
+            {
+                "message": "Complaint deleted successfully"
+            },
+            status=status.HTTP_200_OK
+        )
+    
+#withdraw complaint API
+
+@api_view(["PUT"])
+def withdraw_complaint_api(request, id):
+
+    try:
+
+        complaint = Complaint.objects.get(id=id)
+
+    except Complaint.DoesNotExist:
+
+        return Response(
+            {
+                "error": "Complaint not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    complaint.status = "Withdrawn"
+
+    complaint.save()
+
+    return Response(
+        {
+            "message": "Complaint withdrawn successfully"
+        },
+        status=status.HTTP_200_OK
+    )
+
+@api_view(["GET", "POST"])
+def allocation_api(request):
+
+    if request.method == "GET":
+
+        allocations = RoomAllocation.objects.all()
+
+        serializer = RoomAllocationSerializer(
+            allocations,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+
+        serializer = RoomAllocationSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            room = serializer.validated_data["room"]
+
+            if room.available_beds <= 0:
+
+                return Response(
+                    {
+                        "error": "No beds available"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            serializer.save()
+
+            room.available_beds -= 1
+
+            room.save()
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+#single Allocation API
+
+@api_view(["GET", "PUT", "DELETE"])
+def allocation_detail_api(request, id):
+
+    try:
+
+        allocation = RoomAllocation.objects.get(id=id)
+
+    except RoomAllocation.DoesNotExist:
+
+        return Response(
+            {
+                "error": "Allocation not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == "GET":
+
+        serializer = RoomAllocationSerializer(allocation)
+
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+
+        serializer = RoomAllocationSerializer(
+            allocation,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    elif request.method == "DELETE":
+
+        room = allocation.room
+
+        room.available_beds += 1
+
+        room.save()
+
+        allocation.delete()
+
+        return Response(
+            {
+                "message": "Allocation deleted successfully"
+            },
+            status=status.HTTP_200_OK
+        )
+    
+@api_view(["GET", "POST"])
+def fee_api(request):
+
+    if request.method == "GET":
+
+        fees = Fee.objects.all()
+
+        status_filter = request.GET.get("status")
+
+        if status_filter:
+
+            fees = fees.filter(
+                payment_status=status_filter
+            )
+
+        serializer = FeeSerializer(
+            fees,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+
+        serializer = FeeSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+#single Fee API
+
+@api_view(["GET", "PUT", "DELETE"])
+def fee_detail_api(request, id):
+
+    try:
+
+        fee = Fee.objects.get(id=id)
+
+    except Fee.DoesNotExist:
+
+        return Response(
+            {
+                "error": "Fee record not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if request.method == "GET":
+
+        serializer = FeeSerializer(fee)
+
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+
+        serializer = FeeSerializer(
+            fee,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    elif request.method == "DELETE":
+
+        fee.delete()
+
+        return Response(
+            {
+                "message": "Fee deleted successfully"
+            },
+            status=status.HTTP_200_OK
+        )
+    
+def get_tokens_for_user(user):
+
+    refresh = RefreshToken.for_user(user)
+
+    return {
+
+        'refresh': str(refresh),
+
+        'access': str(refresh.access_token),
+
+    }
+
+@api_view(["POST"])
+def student_login_api(request):
+
+    username = request.data.get("username")
+
+    password = request.data.get("password")
+
+    user = authenticate(
+        username=username,
+        password=password
+    )
+
+    if user is not None:
+
+        tokens = get_tokens_for_user(user)
+
+        return Response(
+            {
+                "message": "Student login successful",
+                "username": user.username,
+                "tokens": tokens
+            },
+            status=status.HTTP_200_OK
+        )
+
+    return Response(
+        {
+            "error": "Invalid username or password"
+        },
+        status=status.HTTP_401_UNAUTHORIZED
+    )
+
+@api_view(["POST"])
+def admin_login_api(request):
+
+    username = request.data.get("username")
+
+    password = request.data.get("password")
+
+    user = authenticate(
+        username=username,
+        password=password
+    )
+
+    if user is not None and user.is_staff:
+
+        tokens = get_tokens_for_user(user)
+
+        return Response(
+            {
+                "message": "Admin login successful",
+                "username": user.username,
+                "tokens": tokens
+            },
+            status=status.HTTP_200_OK
+        )
+
+    return Response(
+        {
+            "error": "Invalid admin credentials"
+        },
+        status=status.HTTP_401_UNAUTHORIZED
+    )

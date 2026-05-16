@@ -30,4 +30,61 @@ path(
     name="room-detail-api"
 ),
 
+
+path(
+    "complaints/",
+    views.complaint_api,
+    name="complaint-api"
+),
+
+path(
+    "complaints/<int:id>/",
+    views.complaint_detail_api,
+    name="complaint-detail-api"
+),
+
+path(
+    "complaints/withdraw/<int:id>/",
+    views.withdraw_complaint_api,
+    name="withdraw-complaint-api"
+),
+
+path(
+    "allocations/",
+    views.allocation_api,
+    name="allocation-api"
+),
+
+path(
+    "allocations/<int:id>/",
+    views.allocation_detail_api,
+    name="allocation-detail-api"
+),
+
+path(
+    "fees/",
+    views.fee_api,
+    name="fee-api"
+),
+
+path(
+    "fees/<int:id>/",
+    views.fee_detail_api,
+    name="fee-detail-api"
+),
+
+path(
+    "student-login/",
+    views.student_login_api,
+    name="student-login-api"
+),
+
+path(
+    "admin-login/",
+    views.admin_login_api,
+    name="admin-login-api"
+),
+
+
+
 ]

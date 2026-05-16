@@ -120,3 +120,15 @@ STATIC_URL = 'static/'
 
 
 LOGIN_URL = "/login/"
+
+
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+
+    ),
+
+}
