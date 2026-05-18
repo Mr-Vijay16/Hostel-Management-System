@@ -54,12 +54,24 @@ from rest_framework import status
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from rest_framework.permissions import IsAuthenticated
+
+from rest_framework.decorators import (
+    api_view,
+    permission_classes
+)
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 
 
 
 def student_signup(request):
 
     if request.method == "POST":
+
+        student_id = request.POST.get("student_id")
 
         username = request.POST.get("username")
 
@@ -87,26 +99,35 @@ def student_signup(request):
 
             return redirect("student-signup")
 
+        student = Student.objects.filter(
+            student_id=student_id
+        ).first()
+
+        if not student:
+
+            messages.error(
+                request,
+                "Student ID not found. Contact admin."
+            )
+
+            return redirect("student-signup")
+
+        if StudentAccount.objects.filter(student=student).exists():
+
+            messages.error(
+                request,
+                "Account already created for this student."
+            )
+
+            return redirect("student-signup")
+
         user = User.objects.create_user(
 
             username=username,
 
-            email=email,
+            email=student.email,
 
             password=password
-        )
-
-        student = Student.objects.create(
-
-            student_name=username,
-
-            email=email,
-
-            phone_number="0000000000",
-
-            course="Not Assigned",
-
-            year=1
         )
 
         StudentAccount.objects.create(
@@ -294,6 +315,20 @@ def admin_login(request):
     request,
     "accounts/admin_login.html"
 )
+
+
+@login_required
+def admin_profile(request):
+
+    context = {
+        "admin": request.user
+    }
+
+    return render(
+        request,
+        "accounts/admin_profile.html",
+        context
+    )
 
 
 
@@ -504,6 +539,69 @@ def student_details(request, id):
     )
 
 
+@login_required
+def student_profile(request):
+
+    student_account = StudentAccount.objects.get(
+        user=request.user
+    )
+
+    student = student_account.student
+
+    context = {
+        "student": student
+    }
+
+    return render(
+        request,
+        "accounts/student_profile.html",
+        context
+    )
+
+def reset_password(request):
+
+    if request.method == "POST":
+
+        form = PasswordChangeForm(
+            request.user,
+            request.POST
+        )
+
+        if form.is_valid():
+
+            user = form.save()
+
+            update_session_auth_hash(
+                request,
+                user
+            )
+
+            messages.success(
+                request,
+                "Password updated successfully"
+            )
+
+            return redirect(
+                "student-profile"
+            )
+
+    else:
+
+        form = PasswordChangeForm(
+            request.user
+        )
+
+    context = {
+        "form": form
+    }
+
+    return render(
+        request,
+        "accounts/reset_password.html",
+        context
+    )
+
+
 def add_room(request):
 
     if request.method == "POST":
@@ -560,13 +658,19 @@ def room_list(request):
             floor_number=floor
         )
 
+    paginator = Paginator(rooms, 5)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
     floors = Room.objects.values_list(
         'floor_number',
         flat=True
     ).distinct()
 
     context = {
-        "rooms": rooms,
+        "page_obj": page_obj,
         "floors": floors
     }
 
@@ -575,7 +679,6 @@ def room_list(request):
         "rooms/room_list.html",
         context
     )
-
 
 def room_details(request, id):
 
@@ -651,6 +754,8 @@ def allocate_room(request):
 
             student = form.cleaned_data["student"]
 
+            room = form.cleaned_data["room"]
+
             already_allocated = RoomAllocation.objects.filter(
                 student=student
             ).exists()
@@ -664,20 +769,29 @@ def allocate_room(request):
 
                 return redirect("allocate-room")
 
-            allocation = form.save()
+            if room.available_beds > 0:
 
-            room = allocation.room
+                allocation = form.save()
 
-            room.available_beds -= 1
+                room.available_beds -= 1
 
-            room.save()
+                room.save()
 
-            messages.success(
-                request,
-                "Room allocated successfully."
-            )
+                messages.success(
+                    request,
+                    "Room allocated successfully."
+                )
 
-            return redirect("allocation-list")
+                return redirect("allocation-list")
+
+            else:
+
+                messages.error(
+                    request,
+                    "No beds available in this room."
+                )
+
+                return redirect("allocate-room")
 
     context = {
         "form": form
@@ -769,14 +883,20 @@ def fee_list(request):
 
     fees = Fee.objects.all()
 
-    status = request.GET.get('status')
+    status_filter = request.GET.get("status")
 
-    if status:
+    if status_filter:
 
-        fees = fees.filter(status=status)
+        fees = fees.filter(status=status_filter)
+
+    paginator = Paginator(fees, 5)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        "fees": fees
+        "page_obj": page_obj
     }
 
     return render(
@@ -861,9 +981,21 @@ def add_complaint(request):
 
 def complaint_list(request):
 
-    complaints = Complaint.objects.all()
+    if request.user.is_staff:
 
-    status = request.GET.get('status')
+        complaints = Complaint.objects.all()
+
+    else:
+
+        student_account = StudentAccount.objects.get(
+            user=request.user
+        )
+
+        complaints = Complaint.objects.filter(
+            student=student_account.student
+        )
+
+    status = request.GET.get("status")
 
     if status:
 
@@ -871,8 +1003,17 @@ def complaint_list(request):
             status=status
         )
 
+    paginator = Paginator(
+        complaints,
+        5
+    )
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "complaints": complaints
+        "page_obj": page_obj
     }
 
     return render(
@@ -1035,7 +1176,18 @@ def delete_allocation(request, id):
 
     allocation = RoomAllocation.objects.get(id=id)
 
+    room = allocation.room
+
+    room.available_beds += 1
+
+    room.save()
+
     allocation.delete()
+
+    messages.success(
+        request,
+        "Allocation removed successfully."
+    )
 
     return redirect("allocation-list")
 
@@ -1088,6 +1240,7 @@ def allocation_list(request):
 # ------------------------------------------------------------
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def student_api(request):
 
     if request.method == "GET":
@@ -1125,7 +1278,8 @@ def student_api(request):
 #Single Student API
 
 @api_view(["GET", "PUT", "DELETE"])
-def student_detail_api(request, id):
+@permission_classes([IsAuthenticated])
+def student_detail_api(request, pk):
 
     try:
 
@@ -1178,8 +1332,8 @@ def student_detail_api(request, id):
 # ------------------------------------------------------------
 #Room API's
 # ------------------------------------------------------------
-
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def room_api(request):
 
     if request.method == "GET":
@@ -1216,7 +1370,8 @@ def room_api(request):
 #single Room API
 
 @api_view(["GET", "PUT", "DELETE"])
-def room_detail_api(request, id):
+@permission_classes([IsAuthenticated])
+def room_detail_api(request, pk):
 
     try:
 
@@ -1266,6 +1421,7 @@ def room_detail_api(request, id):
         )
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def complaint_api(request):
 
     if request.method == "GET":
@@ -1310,7 +1466,8 @@ def complaint_api(request):
 #single Complaint API
 
 @api_view(["GET", "PUT", "DELETE"])
-def complaint_detail_api(request, id):
+@permission_classes([IsAuthenticated])
+def complaint_detail_api(request, pk):
 
     try:
 
@@ -1390,6 +1547,7 @@ def withdraw_complaint_api(request, id):
     )
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def allocation_api(request):
 
     if request.method == "GET":
@@ -1411,26 +1569,41 @@ def allocation_api(request):
 
         if serializer.is_valid():
 
+            student = serializer.validated_data["student"]
+
             room = serializer.validated_data["room"]
 
-            if room.available_beds <= 0:
+            already_allocated = RoomAllocation.objects.filter(
+                student=student
+            ).exists()
+
+            if already_allocated:
 
                 return Response(
                     {
-                        "error": "No beds available"
+                        "error": "Student already allocated."
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            serializer.save()
+            if room.available_beds > 0:
 
-            room.available_beds -= 1
+                serializer.save()
 
-            room.save()
+                room.available_beds -= 1
+
+                room.save()
+
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
+                )
 
             return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED
+                {
+                    "error": "No beds available"
+                },
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         return Response(
@@ -1441,7 +1614,8 @@ def allocation_api(request):
 #single Allocation API
 
 @api_view(["GET", "PUT", "DELETE"])
-def allocation_detail_api(request, id):
+@permission_classes([IsAuthenticated])
+def allocation_detail_api(request, pk):
 
     try:
 
@@ -1498,6 +1672,7 @@ def allocation_detail_api(request, id):
         )
     
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def fee_api(request):
 
     if request.method == "GET":
@@ -1542,7 +1717,8 @@ def fee_api(request):
 #single Fee API
 
 @api_view(["GET", "PUT", "DELETE"])
-def fee_detail_api(request, id):
+@permission_classes([IsAuthenticated])
+def fee_detail_api(request, pk):
 
     try:
 
@@ -1667,3 +1843,102 @@ def admin_login_api(request):
         },
         status=status.HTTP_401_UNAUTHORIZED
     )
+
+
+#dashboard API
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_dashboard_api(request):
+
+    total_students = Student.objects.count()
+
+    total_rooms = Room.objects.count()
+
+    total_allocations = RoomAllocation.objects.count()
+
+    total_complaints = Complaint.objects.count()
+
+    pending_complaints = Complaint.objects.filter(
+        status="Pending"
+    ).count()
+
+    available_beds = Room.objects.aggregate(
+        total=models.Sum("available_beds")
+    )["total"] or 0
+
+    data = {
+
+        "total_students": total_students,
+
+        "total_rooms": total_rooms,
+
+        "total_allocations": total_allocations,
+
+        "total_complaints": total_complaints,
+
+        "pending_complaints": pending_complaints,
+
+        "available_beds": available_beds
+
+    }
+
+    return Response(data)
+
+#student dashboard API
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def student_dashboard_api(request, student_id):
+
+    try:
+
+        student = Student.objects.get(id=student_id)
+
+    except Student.DoesNotExist:
+
+        return Response(
+            {
+                "error": "Student not found"
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    allocation = RoomAllocation.objects.filter(
+        student=student
+    ).first()
+
+    complaints = Complaint.objects.filter(
+        student=student
+    )
+
+    pending_complaints = complaints.filter(
+        status="Pending"
+    ).count()
+
+    fees = Fee.objects.filter(
+        student=student
+    )
+
+    data = {
+
+        "student_name": student.student_name,
+
+        "course": student.course,
+
+        "year": student.year,
+
+        "allocated_room":
+        allocation.room.room_number
+        if allocation else None,
+
+        "total_complaints": complaints.count(),
+
+        "pending_complaints": pending_complaints,
+
+        "fee_records": FeeSerializer(
+            fees,
+            many=True
+        ).data
+    }
+
+    return Response(data)

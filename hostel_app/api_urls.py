@@ -86,5 +86,16 @@ path(
 ),
 
 
+path(
+    "admin-dashboard/",
+    views.admin_dashboard_api,
+    name="admin-dashboard-api"
+),
+
+path(
+    "student-dashboard/<int:student_id>/",
+    views.student_dashboard_api,
+    name="student-dashboard-api"
+),
 
 ]

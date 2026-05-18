@@ -21,18 +21,27 @@ class StudentAccount(models.Model):
 class Student(models.Model):
 
     student_id = models.CharField(
-        max_length=20
+        max_length=10,
+        unique=True
     )
 
     student_name = models.CharField(max_length=100)
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
 
     phone_number = models.CharField(max_length=15)
 
-    course = models.CharField(max_length=100)
+    course = models.CharField(max_length=50)
 
     year = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+
+        if self.student_id.isdigit():
+
+            self.student_id = f"ST{int(self.student_id):03d}"
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
 

@@ -24,11 +24,30 @@ path(
     name="admin-login"
 ),
 
+path(
+    "admin-profile/",
+    views.admin_profile,
+    name="admin-profile"
+),
+
     path('add-student/',views.add_student,name='add-student'),
     path('student-list/',views.student_list, name='student-list'),
     path('update-student/<int:id>/',views.update_student,name='update-student'),
     path('delete-student/<int:id>/',views.delete_student,name='delete-student'),
     path('student-details/<int:id>/',views.student_details,name='student-details'),
+
+    path(
+    "student-profile/",
+    views.student_profile,
+    name="student-profile"
+),
+
+path(
+    "reset-password/",
+    views.reset_password,
+    name="reset-password"
+),
+
     path('add-room/',views.add_room,name='add-room'),
     path('room-list/',views.room_list,name='room-list'),
     path('room-details/<int:id>/',views.room_details, name='room-details'),

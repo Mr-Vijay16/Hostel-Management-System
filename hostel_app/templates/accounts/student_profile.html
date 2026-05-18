@@ -1,0 +1,118 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-5 text-center">
+
+        <!-- PROFILE CIRCLE -->
+
+        <div
+            class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center mx-auto mb-4"
+            style="
+                width:120px;
+                height:120px;
+                font-size:40px;
+                font-weight:bold;
+            "
+        >
+
+            {{ student.student_name|first|upper }}
+
+        </div>
+
+        <h2 class="mb-4">
+
+            Student Profile
+
+        </h2>
+
+        <div class="text-start mx-auto" style="max-width:500px;">
+
+            <p>
+
+                <strong>Student ID:</strong>
+
+                {{ student.student_id }}
+
+            </p>
+
+            <p>
+
+                <strong>Name:</strong>
+
+                {{ student.student_name }}
+
+            </p>
+            <p>
+
+    <strong>Username:</strong>
+
+    {{ request.user.username }}
+
+</p>
+
+            <p>
+
+                <strong>Email:</strong>
+
+                {{ student.email }}
+
+            </p>
+
+            <p>
+
+                <strong>Phone:</strong>
+
+                {{ student.phone_number }}
+
+            </p>
+
+            <p>
+
+                <strong>Course:</strong>
+
+                {{ student.course }}
+
+            </p>
+
+            <p>
+
+                <strong>Year:</strong>
+
+                {{ student.year }}
+
+            </p>
+
+        </div>
+
+        <!-- BUTTONS -->
+
+        <div class="mt-4 d-flex justify-content-center gap-3">
+
+            <a
+                href="{% url 'reset-password' %}"
+                class="btn btn-primary"
+            >
+
+                Reset Password
+
+            </a>
+
+            <a
+                href="{% url 'logout' %}"
+                class="btn btn-danger"
+            >
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

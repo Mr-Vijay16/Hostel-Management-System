@@ -1,0 +1,88 @@
+{% extends 'master.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-5 text-center">
+
+        <!-- PROFILE CIRCLE -->
+
+        <div
+            class="rounded-circle bg-danger text-white d-flex justify-content-center align-items-center mx-auto mb-4"
+            style="
+                width:120px;
+                height:120px;
+                font-size:40px;
+                font-weight:bold;
+            "
+        >
+
+            {{ admin.username|first|upper }}
+
+        </div>
+
+        <h2 class="mb-4">
+
+            Admin Profile
+
+        </h2>
+
+        <div
+            class="text-start mx-auto"
+            style="max-width:500px;"
+        >
+
+            <p>
+
+                <strong>Username:</strong>
+
+                {{ admin.username }}
+
+            </p>
+
+            <p>
+
+                <strong>Email:</strong>
+
+                {{ admin.email }}
+
+            </p>
+
+            <p>
+
+                <strong>Role:</strong>
+
+                Administrator
+
+            </p>
+
+        </div>
+
+        <div class="mt-4 d-flex justify-content-center gap-3">
+
+            <a
+                href="{% url 'reset-password' %}"
+                class="btn btn-primary"
+            >
+
+                Reset Password
+
+            </a>
+
+            <a
+                href="{% url 'logout' %}"
+                class="btn btn-danger"
+            >
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
