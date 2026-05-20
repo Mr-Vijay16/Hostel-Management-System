@@ -64,6 +64,30 @@ from rest_framework.decorators import (
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 
+from collections import defaultdict
+
+
+
+from django.contrib.auth import authenticate
+from django.db import models
+
+from rest_framework.decorators import (
+    api_view,
+    permission_classes
+)
+from rest_framework.permissions import (
+    IsAuthenticated,
+    AllowAny
+)
+from rest_framework.response import Response
+from rest_framework import status
+
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from .models import *
+from .serializers import *
+
+
 
 
 
@@ -807,15 +831,26 @@ def allocate_room(request):
 
 def allocation_list(request):
 
-    allocation = RoomAllocation.objects.all()
+    allocations = Allocation.objects.select_related(
+        'student',
+        'room'
+    ).order_by('room__room_number')
+
+    grouped_allocations = defaultdict(list)
+
+    for allocation in allocations:
+
+        grouped_allocations[allocation.room].append(allocation)
 
     context = {
-        "allocations": allocation
+
+        'grouped_allocations': dict(grouped_allocations)
+
     }
 
     return render(
         request,
-        "allocations/allocation_list.html",
+        'allocation/allocation_list.html',
         context
     )
 
@@ -1128,17 +1163,25 @@ def get_student(request):
 
     return JsonResponse(data)
 
-def allocation_details(request, id):
+def allocation_details(request, pk):
 
-    allocation = RoomAllocation.objects.get(id=id)
+    allocation = get_object_or_404(
+        RoomAllocation,
+        id=pk
+    )
+
+    room_allocations = RoomAllocation.objects.filter(
+        room=allocation.room
+    ).select_related('student', 'room')
 
     context = {
-        "allocation": allocation
+        'room_allocations': room_allocations,
+        'room': allocation.room
     }
 
     return render(
         request,
-        "allocations/allocation_details.html",
+        'allocations/allocation_details.html',
         context
     )
 
@@ -1193,43 +1236,24 @@ def delete_allocation(request, id):
 
 def allocation_list(request):
 
-    allocations = RoomAllocation.objects.all()
+    allocations = RoomAllocation.objects.select_related(
+        'student',
+        'room'
+    ).all().order_by('room__room_number')
 
-    student = request.GET.get("student")
-    room = request.GET.get("room")
-    date = request.GET.get("date")
+    grouped_allocations = defaultdict(list)
 
-    if student:
+    for allocation in allocations:
 
-        allocations = allocations.filter(
-            student__name__icontains=student
-        )
-
-    if room:
-
-        allocations = allocations.filter(
-            room__room_number__icontains=room
-        )
-
-    if date:
-
-        allocations = allocations.filter(
-            allocated_date=date
-        )
-
-    paginator = Paginator(allocations, 5)
-
-    page_number = request.GET.get("page")
-
-    page_obj = paginator.get_page(page_number)
+        grouped_allocations[allocation.room].append(allocation)
 
     context = {
-        "page_obj": page_obj
+        'grouped_allocations': dict(grouped_allocations)
     }
 
     return render(
         request,
-        "allocations/allocation_list.html",
+        'allocations/allocation_list.html',
         context
     )
 
@@ -1239,8 +1263,104 @@ def allocation_list(request):
 
 # ------------------------------------------------------------
 
+# JWT TOKEN FUNCTION
+# ------------------------------------------------------------
+
+def get_tokens_for_user(user):
+
+    refresh = RefreshToken.for_user(user)
+
+    return {
+
+        'refresh': str(refresh),
+
+        'access': str(refresh.access_token),
+
+    }
+
+
+# ------------------------------------------------------------
+# ADMIN LOGIN API
+# ------------------------------------------------------------
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def admin_login_api(request):
+
+    username = request.data.get("username")
+
+    password = request.data.get("password")
+
+    user = authenticate(
+        username=username,
+        password=password
+    )
+
+    if user is not None and user.is_staff:
+
+        tokens = get_tokens_for_user(user)
+
+        return Response(
+            {
+                "message": "Admin login successful",
+
+                "username": user.username,
+
+                "tokens": tokens
+            },
+            status=status.HTTP_200_OK
+        )
+
+    return Response(
+        {
+            "error": "Invalid admin credentials"
+        },
+        status=status.HTTP_401_UNAUTHORIZED
+    )
+
+
+# ------------------------------------------------------------
+# STUDENT LOGIN API
+# ------------------------------------------------------------
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def student_login_api(request):
+
+    username = request.data.get("username")
+
+    password = request.data.get("password")
+
+    user = authenticate(
+        username=username,
+        password=password
+    )
+
+    if user is not None:
+
+        return Response(
+            {
+                "message": "Student login successful",
+
+                "username": user.username
+            },
+            status=status.HTTP_200_OK
+        )
+
+    return Response(
+        {
+            "error": "Invalid username or password"
+        },
+        status=status.HTTP_401_UNAUTHORIZED
+    )
+
+
+# ------------------------------------------------------------
+# STUDENT APIs (PUBLIC)
+# ------------------------------------------------------------
+
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def student_api(request):
 
     if request.method == "GET":
@@ -1273,17 +1393,17 @@ def student_api(request):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
-    
 
-#Single Student API
+
+# SINGLE STUDENT API
 
 @api_view(["GET", "PUT", "DELETE"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def student_detail_api(request, pk):
 
     try:
 
-        student = Student.objects.get(id=id)
+        student = Student.objects.get(id=pk)
 
     except Student.DoesNotExist:
 
@@ -1328,12 +1448,14 @@ def student_detail_api(request, pk):
             },
             status=status.HTTP_200_OK
         )
-    
+
+
 # ------------------------------------------------------------
-#Room API's
+# ROOM APIs (PUBLIC)
 # ------------------------------------------------------------
+
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def room_api(request):
 
     if request.method == "GET":
@@ -1366,16 +1488,17 @@ def room_api(request):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
-    
-#single Room API
+
+
+# SINGLE ROOM API
 
 @api_view(["GET", "PUT", "DELETE"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def room_detail_api(request, pk):
 
     try:
 
-        room = Room.objects.get(id=id)
+        room = Room.objects.get(id=pk)
 
     except Room.DoesNotExist:
 
@@ -1394,7 +1517,8 @@ def room_detail_api(request, pk):
 
     elif request.method == "PUT":
 
-        serializer = RoomSerializer(room,
+        serializer = RoomSerializer(
+            room,
             data=request.data
         )
 
@@ -1420,8 +1544,13 @@ def room_detail_api(request, pk):
             status=status.HTTP_200_OK
         )
 
+
+# ------------------------------------------------------------
+# COMPLAINT APIs (PUBLIC)
+# ------------------------------------------------------------
+
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def complaint_api(request):
 
     if request.method == "GET":
@@ -1463,15 +1592,16 @@ def complaint_api(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-#single Complaint API
+
+# SINGLE COMPLAINT API
 
 @api_view(["GET", "PUT", "DELETE"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def complaint_detail_api(request, pk):
 
     try:
 
-        complaint = Complaint.objects.get(id=id)
+        complaint = Complaint.objects.get(id=pk)
 
     except Complaint.DoesNotExist:
 
@@ -1516,38 +1646,14 @@ def complaint_detail_api(request, pk):
             },
             status=status.HTTP_200_OK
         )
-    
-#withdraw complaint API
 
-@api_view(["PUT"])
-def withdraw_complaint_api(request, id):
 
-    try:
-
-        complaint = Complaint.objects.get(id=id)
-
-    except Complaint.DoesNotExist:
-
-        return Response(
-            {
-                "error": "Complaint not found"
-            },
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-    complaint.status = "Withdrawn"
-
-    complaint.save()
-
-    return Response(
-        {
-            "message": "Complaint withdrawn successfully"
-        },
-        status=status.HTTP_200_OK
-    )
+# ------------------------------------------------------------
+# ROOM ALLOCATION APIs (PUBLIC)
+# ------------------------------------------------------------
 
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def allocation_api(request):
 
     if request.method == "GET":
@@ -1581,7 +1687,7 @@ def allocation_api(request):
 
                 return Response(
                     {
-                        "error": "Student already allocated."
+                        "error": "Student already allocated"
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
@@ -1610,16 +1716,17 @@ def allocation_api(request):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
-    
-#single Allocation API
+
+
+# SINGLE ALLOCATION API
 
 @api_view(["GET", "PUT", "DELETE"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def allocation_detail_api(request, pk):
 
     try:
 
-        allocation = RoomAllocation.objects.get(id=id)
+        allocation = RoomAllocation.objects.get(id=pk)
 
     except RoomAllocation.DoesNotExist:
 
@@ -1670,9 +1777,14 @@ def allocation_detail_api(request, pk):
             },
             status=status.HTTP_200_OK
         )
-    
+
+
+# ------------------------------------------------------------
+# FEE APIs (PUBLIC)
+# ------------------------------------------------------------
+
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def fee_api(request):
 
     if request.method == "GET":
@@ -1714,15 +1826,16 @@ def fee_api(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-#single Fee API
+
+# SINGLE FEE API
 
 @api_view(["GET", "PUT", "DELETE"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def fee_detail_api(request, pk):
 
     try:
 
-        fee = Fee.objects.get(id=id)
+        fee = Fee.objects.get(id=pk)
 
     except Fee.DoesNotExist:
 
@@ -1767,85 +1880,11 @@ def fee_detail_api(request, pk):
             },
             status=status.HTTP_200_OK
         )
-    
-def get_tokens_for_user(user):
 
-    refresh = RefreshToken.for_user(user)
+# ------------------------------------------------------------
+# ADMIN DASHBOARD API (PROTECTED)
+# ------------------------------------------------------------
 
-    return {
-
-        'refresh': str(refresh),
-
-        'access': str(refresh.access_token),
-
-    }
-
-@api_view(["POST"])
-def student_login_api(request):
-
-    username = request.data.get("username")
-
-    password = request.data.get("password")
-
-    user = authenticate(
-        username=username,
-        password=password
-    )
-
-    if user is not None:
-
-        tokens = get_tokens_for_user(user)
-
-        return Response(
-            {
-                "message": "Student login successful",
-                "username": user.username,
-                "tokens": tokens
-            },
-            status=status.HTTP_200_OK
-        )
-
-    return Response(
-        {
-            "error": "Invalid username or password"
-        },
-        status=status.HTTP_401_UNAUTHORIZED
-    )
-
-@api_view(["POST"])
-def admin_login_api(request):
-
-    username = request.data.get("username")
-
-    password = request.data.get("password")
-
-    user = authenticate(
-        username=username,
-        password=password
-    )
-
-    if user is not None and user.is_staff:
-
-        tokens = get_tokens_for_user(user)
-
-        return Response(
-            {
-                "message": "Admin login successful",
-                "username": user.username,
-                "tokens": tokens
-            },
-            status=status.HTTP_200_OK
-        )
-
-    return Response(
-        {
-            "error": "Invalid admin credentials"
-        },
-        status=status.HTTP_401_UNAUTHORIZED
-    )
-
-
-#dashboard API
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def admin_dashboard_api(request):
@@ -1880,65 +1919,6 @@ def admin_dashboard_api(request):
 
         "available_beds": available_beds
 
-    }
-
-    return Response(data)
-
-#student dashboard API
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def student_dashboard_api(request, student_id):
-
-    try:
-
-        student = Student.objects.get(id=student_id)
-
-    except Student.DoesNotExist:
-
-        return Response(
-            {
-                "error": "Student not found"
-            },
-            status=status.HTTP_404_NOT_FOUND
-        )
-
-    allocation = RoomAllocation.objects.filter(
-        student=student
-    ).first()
-
-    complaints = Complaint.objects.filter(
-        student=student
-    )
-
-    pending_complaints = complaints.filter(
-        status="Pending"
-    ).count()
-
-    fees = Fee.objects.filter(
-        student=student
-    )
-
-    data = {
-
-        "student_name": student.student_name,
-
-        "course": student.course,
-
-        "year": student.year,
-
-        "allocated_room":
-        allocation.room.room_number
-        if allocation else None,
-
-        "total_complaints": complaints.count(),
-
-        "pending_complaints": pending_complaints,
-
-        "fee_records": FeeSerializer(
-            fees,
-            many=True
-        ).data
     }
 
     return Response(data)

@@ -6,26 +6,232 @@ Update Room
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container py-3" style="max-width: 950px;">
 
-    <h1 class="text-center mb-4">
-        Update Room
-    </h1>
+    <!-- PAGE HEADER -->
 
-    <form method="POST">
+    <div class="text-center mb-3">
 
-        {% csrf_token %}
+        <h1 class="fw-bold display-6 text-dark mb-1">
 
-        {{ form.as_p }}
-
-        <button
-            type="submit"
-            class="btn btn-success"
-        >
             Update Room
-        </button>
 
-    </form>
+        </h1>
+
+        <p class="text-muted small mb-0">
+
+            Modify hostel room information
+
+        </p>
+
+    </div>
+
+    <!-- FORM CARD -->
+
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+
+        <!-- CARD HEADER -->
+
+        <div class="bg-success bg-gradient text-white p-3">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <!-- ICON -->
+
+                <div
+                    class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center"
+                    style="width:55px; height:55px; font-size:22px;"
+                >
+
+                    <i class="bi bi-door-open-fill"></i>
+
+                </div>
+
+                <!-- TITLE -->
+
+                <div>
+
+                    <h4 class="fw-bold mb-1">
+
+                        Room {{ form.room_number.value }}
+
+                    </h4>
+
+                    <p class="mb-0 small opacity-75">
+
+                        Update room details
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FORM BODY -->
+
+        <div class="card-body p-3">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <!-- ROOM NUMBER -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Room Number
+
+                        </label>
+
+                        <div class="input-group input-group-sm">
+
+                            <span class="input-group-text bg-light">
+
+                                <i class="bi bi-hash"></i>
+
+                            </span>
+
+                            {{ form.room_number }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- ROOM TYPE -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Room Type
+
+                        </label>
+
+                        <div class="input-group input-group-sm">
+
+                            <span class="input-group-text bg-light">
+
+                                <i class="bi bi-house-door-fill"></i>
+
+                            </span>
+
+                            {{ form.room_type }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- TOTAL BEDS -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Total Beds
+
+                        </label>
+
+                        <div class="input-group input-group-sm">
+
+                            <span class="input-group-text bg-light">
+
+                                <i class="bi bi-grid-fill"></i>
+
+                            </span>
+
+                            {{ form.total_beds }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- AVAILABLE BEDS -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Available Beds
+
+                        </label>
+
+                        <div class="input-group input-group-sm">
+
+                            <span class="input-group-text bg-light">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            </span>
+
+                            {{ form.available_beds }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- FLOOR NUMBER -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Floor Number
+
+                        </label>
+
+                        <div class="input-group input-group-sm">
+
+                            <span class="input-group-text bg-light">
+
+                                <i class="bi bi-building-fill"></i>
+
+                            </span>
+
+                            {{ form.floor_number }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a
+                        href="{% url 'room-list' %}"
+                        class="btn btn-light border btn-sm px-3 py-2 rounded-3 fw-semibold"
+                    >
+
+                        Cancel
+
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-success btn-sm px-3 py-2 rounded-3 fw-semibold"
+                    >
+
+                        <i class="bi bi-check-circle-fill me-1"></i>
+
+                        Update Room
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
 

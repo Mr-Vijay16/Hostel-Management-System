@@ -120,9 +120,9 @@ path(
     name="get-student"
 ),
 path(
-    "allocation-details/<int:id>/",
+    'allocation-details/<int:pk>/',
     views.allocation_details,
-    name="allocation-details"
+    name='allocation-details'
 ),
 
 path(

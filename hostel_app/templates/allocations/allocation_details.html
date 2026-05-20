@@ -1,30 +1,105 @@
 {% extends "master.html" %}
 
+{% block title %}
+Allocation Details
+{% endblock title %}
+
 {% block content %}
 
-<div class="container mt-5">
+<div class="container-fluid px-4 py-4">
 
-    <h1>Allocation Details</h1>
+    <div class="mb-4">
 
-    <table class="table table-bordered">
+        <h1 class="fw-bold display-4 text-dark mb-2">
+            Allocation Details
+        </h1>
 
-        <tr>
-            <th>Student</th>
-            <td>{{ allocation.student }}</td>
-        </tr>
+        <p class="text-muted fs-5">
+            Students allocated in Room {{ room.room_number }}
+        </p>
 
-        <tr>
-            <th>Room</th>
-            <td>{{ allocation.room }}</td>
-        </tr>
+    </div>
 
-        <tr>
-            <th>Date</th>
-            <td>{{ allocation.allocation_date }}</td>
-        </tr>
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-    </table>
+        <div class="card-header bg-dark text-white py-4">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h3 class="fw-bold mb-1">
+                        Room {{ room.room_number }}
+                    </h3>
+
+                    <small class="text-light">
+                        Allocated Students List
+                    </small>
+
+                </div>
+
+                <span class="badge bg-primary px-4 py-2 fs-6">
+                    {{ room_allocations.count }} Students
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th class="px-4 py-3">
+                            Student ID
+                        </th>
+
+                        <th class="px-4 py-3">
+                            Student Name
+                        </th>
+
+                        <th class="px-4 py-3">
+                            Allocation Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for allocation in room_allocations %}
+
+                    <tr>
+
+                        <td class="px-4 py-3 fw-semibold">
+                            {{ allocation.student.student_id }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ allocation.student }}
+                        </td>
+
+                        <td class="px-4 py-3">
+                            {{ allocation.allocation_date }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
-{% endblock %}
+{% endblock content %}

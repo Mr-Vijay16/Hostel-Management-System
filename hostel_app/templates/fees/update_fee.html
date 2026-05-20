@@ -1,27 +1,171 @@
-{% extends 'master.html' %}
+{% extends "master.html" %}
+
+{% block title %}
+Update Fee
+{% endblock title %}
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container-fluid py-4">
 
-    <h1 class="text-center">
-        Update Fee
-    </h1>
+    <!-- PAGE HEADER -->
 
-    <form method="POST">
+    <div class="text-center mb-4">
 
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button class="btn btn-success">
+        <h1 class="fw-bold display-5 mb-2">
 
             Update Fee
 
-        </button>
+        </h1>
 
-    </form>
+        <p class="text-muted fs-5">
+
+            Edit hostel fee payment information
+
+        </p>
+
+    </div>
+
+    <!-- FORM CARD -->
+
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mx-auto"
+         style="max-width: 950px;">
+
+        <!-- CARD HEADER -->
+
+        <div class="bg-primary text-white p-4">
+
+            <h3 class="fw-bold mb-1">
+
+                Fee Details
+
+            </h3>
+
+            <p class="mb-0 opacity-75">
+
+                Update payment status and details
+
+            </p>
+
+        </div>
+
+        <!-- CARD BODY -->
+
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row g-4">
+
+                    <!-- STUDENT -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Student
+
+                        </label>
+
+                        {{ form.student }}
+
+                    </div>
+
+                    <!-- AMOUNT -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Amount
+
+                        </label>
+
+                        {{ form.amount }}
+
+                    </div>
+
+                    <!-- PAYMENT DATE -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Payment Date
+
+                        </label>
+
+                        {{ form.payment_date }}
+
+                    </div>
+
+                    <!-- STATUS -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Status
+
+                        </label>
+
+                        {{ form.status }}
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+
+                <div class="d-flex justify-content-end gap-3 mt-4">
+
+                    <a href="{% url 'fee-list' %}"
+                       class="btn btn-light border px-4 py-2 rounded-3 fw-semibold">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-success px-4 py-2 rounded-3 fw-semibold">
+
+                        <i class="bi bi-check-circle me-1"></i>
+
+                        Update Fee
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
 
-{% endblock %}
+<style>
+
+    .form-control,
+    .form-select {
+
+        height: 50px;
+        border-radius: 12px;
+        font-size: 15px;
+
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
+
+    }
+
+</style>
+
+{% endblock content %}

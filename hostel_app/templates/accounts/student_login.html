@@ -4,120 +4,159 @@
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="login-page">
 
-    <div class="row justify-content-center">
+    <div class="login-card">
 
-        <div class="col-md-5">
+        <!-- LEFT SIDE -->
 
-            <!-- MESSAGE ALERTS -->
+        <div class="login-left">
 
+            <div class="platform-badge">
+                Smart Hostel Platform
+            </div>
 
-            <!-- LOGIN CARD -->
+            <h1>
+                Student <br>
+                Login Portal
+            </h1>
 
-            <div
-                class="card shadow-lg border-0 rounded-4 p-4"
-                style="background-color: white;"
+            <p>
+                Access your hostel dashboard, room details,
+                fee payments, complaints, and allocations securely.
+            </p>
+
+            <img
+                src="{% static 'images/login.png' %}"
+                alt="Student Login"
+                class="login-image"
             >
 
-                <h1 class="text-center mb-4 fw-bold">
+        </div>
 
-                    Student Login
+        <!-- RIGHT SIDE -->
 
-                </h1>
+        <div class="login-right">
 
-                <form method="POST">
+            <div class="login-header">
 
-                    {% csrf_token %}
+                <div class="login-icon">
 
-                    <!-- USERNAME -->
+                    <i class="bi bi-person-circle"></i>
 
-                    <div class="mb-3">
+                </div>
 
-                        <label class="form-label fw-semibold">
+                <h2>
+                    Welcome Back
+                </h2>
 
-                            Username
+                <p>
+                    Login to continue your session
+                </p>
 
-                        </label>
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <!-- USERNAME -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Username
+
+                    </label>
+
+                    <div class="input-group custom-input">
+
+                        <span class="input-group-text">
+
+                            <i class="bi bi-person"></i>
+
+                        </span>
 
                         <input
                             type="text"
                             name="username"
-                            class="form-control form-control-lg"
+                            class="form-control"
                             placeholder="Enter Username"
                             required
                         >
 
                     </div>
 
-                    <!-- PASSWORD -->
+                </div>
 
-                    <div class="mb-4">
+                <!-- PASSWORD -->
 
-                        <label class="form-label fw-semibold">
+                <div class="mb-4">
 
-                            Password
+                    <label class="form-label">
 
-                        </label>
+                        Password
 
-                        <div class="input-group">
+                    </label>
 
-                            <input
-                                type="password"
-                                name="password"
-                                id="password"
-                                class="form-control form-control-lg"
-                                placeholder="Enter Password"
-                                required
-                            >
+                    <div class="input-group custom-input">
 
-                            <button
-                                type="button"
-                                class="btn btn-outline-secondary"
-                                onclick="togglePassword()"
-                            >
+                        <span class="input-group-text">
 
-                                Show
+                            <i class="bi bi-lock"></i>
 
-                            </button>
+                        </span>
 
-                        </div>
-
-                    </div>
-
-                    <!-- LOGIN BUTTON -->
-
-                    <div class="d-grid">
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary btn-lg"
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="form-control"
+                            placeholder="Enter Password"
+                            required
                         >
 
-                            Login
+                        <button
+                            type="button"
+                            class="btn btn-light border"
+                            onclick="togglePassword()"
+                        >
+
+                            <i class="bi bi-eye"></i>
 
                         </button>
 
                     </div>
 
-                </form>
+                </div>
 
-                <!-- SIGNUP LINK -->
+                <!-- LOGIN BUTTON -->
 
-                <p class="text-center mt-4 mb-0">
+                <button
+                    type="submit"
+                    class="btn login-btn w-100"
+                >
 
-                    Don't have an account?
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
 
-                    <a
-                        href="{% url 'student-signup' %}"
-                        class="text-decoration-none fw-bold"
-                    >
+                    Login
 
-                        Signup
+                </button>
 
-                    </a>
+            </form>
 
-                </p>
+            <!-- SIGNUP -->
+
+            <div class="signup-link">
+
+                Don't have an account?
+
+                <a href="{% url 'student-signup' %}">
+
+                    Signup
+
+                </a>
 
             </div>
 
@@ -127,7 +166,323 @@
 
 </div>
 
-<!-- PASSWORD TOGGLE SCRIPT -->
+<style>
+
+.login-page {
+
+    min-height: calc(100vh - 82px);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 8px 15px;
+
+}
+
+/* CARD */
+
+.login-card {
+
+    width: 100%;
+
+    max-width: 920px;
+
+    min-height: 520px;
+
+    background: white;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+
+}
+
+/* LEFT */
+
+.login-left {
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    color: white;
+
+    padding: 38px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+}
+
+.platform-badge {
+
+    background: rgba(255,255,255,0.15);
+
+    width: fit-content;
+
+    padding: 8px 20px;
+
+    border-radius: 50px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    margin-bottom: 25px;
+
+}
+
+.login-left h1 {
+
+    font-size: 48px;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    margin-bottom: 20px;
+
+}
+
+.login-left p {
+
+    font-size: 17px;
+
+    color: rgba(255,255,255,0.9);
+
+    line-height: 1.8;
+
+    margin-bottom: 30px;
+
+}
+
+.login-image {
+
+    width: 100%;
+
+    max-width: 260px;
+
+    margin-top: 20px;
+
+}
+
+/* RIGHT */
+
+.login-right {
+
+    padding: 38px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+}
+
+.login-header {
+
+    text-align: center;
+
+    margin-bottom: 24px;
+
+}
+
+.login-icon {
+
+    width: 95px;
+
+    height: 95px;
+
+    background: #eff6ff;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: auto;
+
+    margin-bottom: 18px;
+
+}
+
+.login-icon i {
+
+    font-size: 46px;
+
+    color: #2563eb;
+
+}
+
+.login-header h2 {
+
+    font-size: 42px;
+
+    font-weight: 800;
+
+    color: #0f172a;
+
+}
+
+.login-header p {
+
+    color: #64748b;
+
+    font-size: 18px;
+
+}
+
+/* INPUTS */
+
+.form-label {
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+
+    color: #0f172a;
+
+}
+
+.custom-input {
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    border: 1px solid #dbe2ea;
+
+}
+
+.custom-input .input-group-text {
+
+    background: #f8fafc;
+
+    border: none;
+
+    padding: 16px 18px;
+
+    color: #64748b;
+
+    font-size: 18px;
+
+}
+
+.custom-input .form-control {
+
+    border: none;
+
+    padding: 16px;
+
+    font-size: 17px;
+
+    box-shadow: none;
+
+}
+
+/* BUTTON */
+
+.login-btn {
+
+    background: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    padding: 16px;
+
+    border-radius: 16px;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    transition: 0.3s;
+
+}
+
+.login-btn:hover {
+
+    background: #1d4ed8;
+
+    transform: translateY(-2px);
+
+}
+
+/* SIGNUP */
+
+.signup-link {
+
+    text-align: center;
+
+    margin-top: 24px;
+
+    font-size: 16px;
+
+    color: #64748b;
+
+}
+
+.signup-link a {
+
+    text-decoration: none;
+
+    color: #2563eb;
+
+    font-weight: 700;
+
+}
+
+/* MOBILE */
+
+@media(max-width: 991px) {
+
+    .login-card {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .login-left {
+
+        display: none;
+
+    }
+
+    .login-right {
+
+        padding: 35px;
+
+    }
+
+    .login-header h2 {
+
+        font-size: 34px;
+
+    }
+
+}
+
+</style>
 
 <script>
 

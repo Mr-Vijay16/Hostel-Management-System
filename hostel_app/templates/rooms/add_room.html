@@ -6,30 +6,246 @@ Add Room
 
 {% block content %}
 
-<h1 class="text-center mt-4 mb-4">
-    Add Room
-</h1>
+<div class="container-fluid py-3">
 
-<div class="container">
+    <!-- PAGE HEADER -->
 
-    <form action="" method="POST">
+    <div class="text-center mb-3">
 
-        {% csrf_token %}
+        <h1 class="fw-bold display-6 mb-1">
 
-        {{ form.as_p }}
+            Add Room
 
-        {% if user.is_staff %}
+        </h1>
 
-<button
-    type="submit"
-    class="btn btn-success"
->
-    Add Room
-</button>
+        <p class="text-muted fs-6">
 
-{% endif %}
-    </form>
+            Create and manage hostel room details
+
+        </p>
+
+    </div>
+
+    <!-- FORM CARD -->
+
+    <div class="card border-0 shadow rounded-4 overflow-hidden mx-auto"
+         style="max-width: 900px;">
+
+        <!-- CARD HEADER -->
+
+        <div class="bg-primary text-white text-center py-3">
+
+            <h3 class="fw-bold mb-1">
+
+                <i class="bi bi-building-add me-2"></i>
+
+                Room Details
+
+            </h3>
+
+            <p class="mb-0 small opacity-75">
+
+                Add hostel room information
+
+            </p>
+
+        </div>
+
+        <!-- CARD BODY -->
+
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <!-- ROOM NUMBER -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Room Number
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-hash"></i>
+
+                            </span>
+
+                            {{ form.room_number }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- ROOM TYPE -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Room Type
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-house-door"></i>
+
+                            </span>
+
+                            {{ form.room_type }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- TOTAL BEDS -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Total Beds
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-grid"></i>
+
+                            </span>
+
+                            {{ form.total_beds }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- AVAILABLE BEDS -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold small">
+
+                            Available Beds
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-check-circle"></i>
+
+                            </span>
+
+                            {{ form.available_beds }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- FLOOR NUMBER -->
+
+                    <div class="col-12">
+
+                        <label class="form-label fw-semibold small">
+
+                            Floor Number
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-building"></i>
+
+                            </span>
+
+                            {{ form.floor_number }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a href="{% url 'room-list' %}"
+                       class="btn btn-light border rounded-3 px-4">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary rounded-3 px-4">
+
+                        <i class="bi bi-plus-circle me-1"></i>
+
+                        Add Room
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
+
+<style>
+
+    .form-control,
+    .form-select {
+
+        height: 45px;
+        border-radius: 10px;
+        font-size: 14px;
+
+    }
+
+    .input-group-text {
+
+        border-radius: 10px 0 0 10px;
+        background: #f8f9fa;
+        padding: 0 14px;
+
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.1rem rgba(13,110,253,.15);
+
+    }
+
+    .card {
+
+        margin-bottom: 20px;
+
+    }
+
+</style>
 
 {% endblock content %}

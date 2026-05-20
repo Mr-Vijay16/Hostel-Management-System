@@ -11,12 +11,7 @@ urlpatterns = [
         name="student-api"
     ),
 
-    path(
-        "students/<int:id>/",
-        views.student_detail_api,
-        name="student-detail-api"
-    ),
-
+  
 
     path(
     "rooms/",
@@ -25,9 +20,9 @@ urlpatterns = [
 ),
 
 path(
-    "rooms/<int:id>/",
+    'rooms/<int:pk>/',
     views.room_detail_api,
-    name="room-detail-api"
+    name='room-detail'
 ),
 
 
@@ -38,15 +33,15 @@ path(
 ),
 
 path(
-    "complaints/<int:id>/",
+    'complaints/<int:pk>/',
     views.complaint_detail_api,
-    name="complaint-detail-api"
+    name='complaint-detail'
 ),
 
 path(
-    "complaints/withdraw/<int:id>/",
-    views.withdraw_complaint_api,
-    name="withdraw-complaint-api"
+    'withdraw-complaint/<int:id>/',
+    views.withdraw_complaint,
+    name='withdraw-complaint'
 ),
 
 path(
@@ -56,9 +51,9 @@ path(
 ),
 
 path(
-    "allocations/<int:id>/",
+    'allocations/<int:pk>/',
     views.allocation_detail_api,
-    name="allocation-detail-api"
+    name='allocation-detail'
 ),
 
 path(
@@ -68,9 +63,9 @@ path(
 ),
 
 path(
-    "fees/<int:id>/",
+    'fees/<int:pk>/',
     views.fee_detail_api,
-    name="fee-detail-api"
+    name='fee-detail'
 ),
 
 path(
@@ -93,9 +88,14 @@ path(
 ),
 
 path(
-    "student-dashboard/<int:student_id>/",
-    views.student_dashboard_api,
-    name="student-dashboard-api"
+    'student-dashboard/',
+    views.student_dashboard,
+    name='student-dashboard'
 ),
 
+path(
+    'students/<int:pk>/',
+    views.student_detail_api,
+    name='student-detail'
+),
 ]

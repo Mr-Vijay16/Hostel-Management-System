@@ -6,27 +6,274 @@ Update Student
 
 {% block content %}
 
-<h1 class="text-center mt-4 mb-4">
-    Update Student
-</h1>
+<div class="container py-3" style="max-width: 900px;">
 
-<div class="container">
+    <!-- PAGE HEADER -->
 
-    <form action="" method="POST">
+    <div class="text-center mb-3">
 
-        {% csrf_token %}
+        <h1 class="fw-bold display-6 text-dark mb-1">
 
-        {{ form.as_p }}
-
-        <button
-            type="submit"
-            class="btn btn-success"
-        >
             Update Student
-        </button>
 
-    </form>
+        </h1>
+
+        <p class="text-muted small mb-0">
+
+            Edit and manage student information
+
+        </p>
+
+    </div>
+
+    <!-- FORM CARD -->
+
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+
+        <!-- CARD HEADER -->
+
+        <div class="bg-primary bg-gradient text-white p-3">
+
+            <h4 class="fw-bold mb-1">
+
+                Student Details
+
+            </h4>
+
+            <p class="mb-0 small opacity-75">
+
+                Update hostel student information
+
+            </p>
+
+        </div>
+
+        <!-- FORM BODY -->
+
+        <div class="card-body p-3">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <!-- STUDENT ID -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Student ID
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-light border-0">
+
+                                <i class="bi bi-person-badge"></i>
+
+                            </span>
+
+                            {{ form.student_id }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- STUDENT NAME -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Student Name
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-light border-0">
+
+                                <i class="bi bi-person"></i>
+
+                            </span>
+
+                            {{ form.student_name }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- EMAIL -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Email Address
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-light border-0">
+
+                                <i class="bi bi-envelope"></i>
+
+                            </span>
+
+                            {{ form.email }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- PHONE -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Phone Number
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-light border-0">
+
+                                <i class="bi bi-telephone"></i>
+
+                            </span>
+
+                            {{ form.phone_number }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- COURSE -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Course
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-light border-0">
+
+                                <i class="bi bi-book"></i>
+
+                            </span>
+
+                            {{ form.course }}
+
+                        </div>
+
+                    </div>
+
+                    <!-- YEAR -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Academic Year
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text bg-light border-0">
+
+                                <i class="bi bi-calendar"></i>
+
+                            </span>
+
+                            {{ form.year }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTONS -->
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+
+                    <a
+                        href="{% url 'student-list' %}"
+                        class="btn btn-light border rounded-3 px-3 py-2 fw-semibold"
+                    >
+
+                        Cancel
+
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary rounded-3 px-4 py-2 fw-semibold"
+                    >
+
+                        <i class="bi bi-check-circle me-1"></i>
+
+                        Update Student
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
+
+<style>
+
+    .form-control,
+    .form-select {
+
+        height: 48px;
+        border-radius: 12px !important;
+        border: 1px solid #dbe2ea;
+        box-shadow: none;
+        font-size: 15px;
+
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+
+        border-color: #2563eb;
+        box-shadow: 0 0 0 0.12rem rgba(37, 99, 235, 0.15);
+
+    }
+
+    .input-group-text {
+
+        border-radius: 12px 0 0 12px !important;
+        color: #2563eb;
+        min-width: 50px;
+        justify-content: center;
+
+    }
+
+    .card {
+
+        background: #ffffff;
+
+    }
+
+</style>
 
 {% endblock content %}

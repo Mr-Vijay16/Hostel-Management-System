@@ -2,21 +2,88 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container-fluid">
 
-    <div class="row justify-content-center align-items-center ">
+    <div class="row min-vh-100 align-items-center">
 
-        <div class="col-md-5">
+        <!-- LEFT SIDE -->
 
-            <!-- LOGIN CARD -->
+        <div class="col-lg-6 d-none d-lg-flex flex-column justify-content-center px-5">
 
-            <div class="card shadow-lg border-0 rounded-4 p-5">
+            <h1 class="display-3 fw-bold text-primary mb-4">
 
-                <h1 class="text-center text-info fw-bold mb-4">
+                Hostel Management System
+
+            </h1>
+
+            <p class="lead text-secondary mb-4">
+
+                Manage hostel operations efficiently with
+                secure administration access.
+
+            </p>
+
+            <div class="d-flex gap-3">
+
+                <div class="bg-primary text-white p-4 rounded-4 shadow-sm">
+
+                    <h2 class="fw-bold">24/7</h2>
+
+                    <p class="mb-0">Management Access</p>
+
+                </div>
+
+                <div class="bg-success text-white p-4 rounded-4 shadow-sm">
+
+                    <h2 class="fw-bold">100%</h2>
+
+                    <p class="mb-0">Secure Login</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE LOGIN CARD -->
+
+        <div class="col-lg-6 d-flex justify-content-center">
+
+            <div
+                class="card border-0 shadow-lg rounded-5 p-5"
+                style="width: 100%; max-width: 500px;"
+            >
+
+                <!-- ICON -->
+
+                <div class="text-center mb-4">
+
+                    <div
+                        class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                        style="width: 90px; height: 90px; font-size: 40px;"
+                    >
+
+                        <i class="bi bi-person-lock"></i>
+
+                    </div>
+
+                </div>
+
+                <!-- TITLE -->
+
+                <h1 class="text-center fw-bold mb-2">
 
                     Admin Login
 
                 </h1>
+
+                <p class="text-center text-secondary mb-5">
+
+                    Enter your credentials to continue
+
+                </p>
+
+                <!-- FORM -->
 
                 <form method="POST">
 
@@ -35,7 +102,7 @@
                         <input
                             type="text"
                             name="username"
-                            class="form-control form-control-lg"
+                            class="form-control form-control-lg rounded-4"
                             placeholder="Enter Username"
                             required
                         >
@@ -58,14 +125,14 @@
                                 type="password"
                                 name="password"
                                 id="password"
-                                class="form-control form-control-lg"
+                                class="form-control form-control-lg rounded-start-4"
                                 placeholder="Enter Password"
                                 required
                             >
 
                             <button
                                 type="button"
-                                class="btn btn-outline-secondary"
+                                class="btn btn-outline-secondary rounded-end-4"
                                 onclick="togglePassword()"
                             >
 
@@ -79,18 +146,14 @@
 
                     <!-- LOGIN BUTTON -->
 
-                    <div class="d-grid">
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-lg w-100 rounded-4 fw-bold py-3"
+                    >
 
-                        <button
-                            type="submit"
-                            class="btn btn-info btn-lg text-white fw-bold"
-                        >
+                        Login
 
-                            Admin Login
-
-                        </button>
-
-                    </div>
+                    </button>
 
                 </form>
 
@@ -108,17 +171,15 @@
 
 function togglePassword() {
 
-    let password = document.getElementById("password");
+    let passwordField = document.getElementById("password");
 
-    if (password.type === "password") {
+    if (passwordField.type === "password") {
 
-        password.type = "text";
+        passwordField.type = "text";
 
-    }
+    } else {
 
-    else {
-
-        password.type = "password";
+        passwordField.type = "password";
 
     }
 

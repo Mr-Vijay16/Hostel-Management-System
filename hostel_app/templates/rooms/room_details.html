@@ -6,37 +6,244 @@ Room Details
 
 {% block content %}
 
-<h1 class="text-center mt-4 mb-4">
-    Room Details
-</h1>
+<div class="container py-3" style="max-width: 950px;">
 
-<div class="container">
+    <!-- PAGE HEADER -->
 
-    <div class="card p-4 shadow">
+    <div class="text-center mb-3">
 
-        <h3 class="mb-3">
-            {{ room.room_number }}
-        </h3>
+        <h1 class="fw-bold display-6 text-dark mb-1">
 
-        <p>
-            <strong>Room Type:</strong>
-            {{ room.room_type }}
+            Room Details
+
+        </h1>
+
+        <p class="text-muted small mb-0">
+
+            View complete hostel room information
+
         </p>
 
-        <p>
-            <strong>Total Beds:</strong>
-            {{ room.total_beds }}
-        </p>
+    </div>
 
-        <p>
-            <strong>Available Beds:</strong>
-            {{ room.available_beds }}
-        </p>
+    <!-- ROOM DETAILS CARD -->
 
-        <p>
-            <strong>Floor Number:</strong>
-            {{ room.floor_number }}
-        </p>
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+
+        <!-- TOP HEADER -->
+
+        <div class="bg-primary bg-gradient text-white p-3">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <!-- ICON -->
+
+                <div
+                    class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center"
+                    style="width:60px; height:60px; font-size:24px;"
+                >
+
+                    <i class="bi bi-door-open-fill"></i>
+
+                </div>
+
+                <!-- ROOM INFO -->
+
+                <div>
+
+                    <h3 class="fw-bold mb-1">
+
+                        Room {{ room.room_number }}
+
+                    </h3>
+
+                    <p class="mb-0 small opacity-75">
+
+                        Hostel Room Information
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DETAILS BODY -->
+
+        <div class="card-body p-3">
+
+            <div class="row g-3">
+
+                <!-- ROOM TYPE -->
+
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <div class="d-flex align-items-center mb-2">
+
+                            <div
+                                class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width:45px; height:45px;"
+                            >
+
+                                <i class="bi bi-house-door-fill"></i>
+
+                            </div>
+
+                            <h5 class="fw-bold mb-0">
+
+                                Room Type
+
+                            </h5>
+
+                        </div>
+
+                        <p class="text-muted fs-6 mb-0">
+
+                            {{ room.room_type }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- TOTAL BEDS -->
+
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <div class="d-flex align-items-center mb-2">
+
+                            <div
+                                class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width:45px; height:45px;"
+                            >
+
+                                <i class="bi bi-grid-fill"></i>
+
+                            </div>
+
+                            <h5 class="fw-bold mb-0">
+
+                                Total Beds
+
+                            </h5>
+
+                        </div>
+
+                        <p class="text-muted fs-6 mb-0">
+
+                            {{ room.total_beds }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- AVAILABLE BEDS -->
+
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <div class="d-flex align-items-center mb-2">
+
+                            <div
+                                class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width:45px; height:45px;"
+                            >
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            </div>
+
+                            <h5 class="fw-bold mb-0">
+
+                                Available Beds
+
+                            </h5>
+
+                        </div>
+
+                        <p class="text-muted fs-6 mb-0">
+
+                            {{ room.available_beds }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- FLOOR NUMBER -->
+
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <div class="d-flex align-items-center mb-2">
+
+                            <div
+                                class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width:45px; height:45px;"
+                            >
+
+                                <i class="bi bi-building-fill"></i>
+
+                            </div>
+
+                            <h5 class="fw-bold mb-0">
+
+                                Floor Number
+
+                            </h5>
+
+                        </div>
+
+                        <p class="text-muted fs-6 mb-0">
+
+                            Floor {{ room.floor_number }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BUTTONS -->
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+
+                <a
+                    href="{% url 'room-list' %}"
+                    class="btn btn-light border btn-sm px-3 py-2 rounded-3 fw-semibold"
+                >
+
+                    Back
+
+                </a>
+
+                <a
+                    href="{% url 'update-room' room.id %}"
+                    class="btn btn-primary btn-sm px-3 py-2 rounded-3 fw-semibold"
+                >
+
+                    <i class="bi bi-pencil-square me-1"></i>
+
+                    Edit Room
+
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 

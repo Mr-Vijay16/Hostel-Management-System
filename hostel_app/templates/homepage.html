@@ -1,24 +1,213 @@
 {% extends 'master.html' %}
+{% load static %}
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container-fluid px-4 py-4">
 
-    <h1 class="text-center mb-5">
-        Hostel Management Dashboard
-    </h1>
+    <!-- ========================= -->
+    <!-- GUEST HOME PAGE -->
+    <!-- ========================= -->
 
-    <div class="row">
+    {% if not user.is_authenticated %}
 
-        <div class="col-md-3">
+    <section class="py-4">
 
-            <div class="card bg-primary text-white mb-4">
+        <div class="row align-items-center min-vh-75">
 
-                <div class="card-body">
+            <!-- LEFT CONTENT -->
 
-                    <h3>{{ total_students }}</h3>
+            <div class="col-lg-6">
 
-                    <p>Total Students</p>
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-3">
+
+                    Smart Hostel Platform
+
+                </span>
+
+                <h1 class="display-3 fw-bold lh-sm mb-4">
+
+                    Smart Hostel
+
+                    <span class="text-primary">
+
+                        Management
+
+                    </span>
+
+                    System
+
+                </h1>
+
+                <p class="lead text-secondary mb-4">
+
+                    Manage students, rooms, complaints,
+                    allocations, and fees with a secure,
+                    modern, and efficient hostel platform.
+
+                </p>
+
+                <!-- ACTION BUTTONS -->
+
+                <div class="d-flex flex-wrap gap-3">
+
+                    <a
+                        href="{% url 'student-login' %}"
+                        class="btn btn-primary btn-lg px-4 py-3 rounded-4 shadow-sm fw-semibold"
+                    >
+
+                        <i class="bi bi-person-circle me-2"></i>
+
+                        Student Login
+
+                    </a>
+
+                    <a
+                        href="{% url 'admin-login' %}"
+                        class="btn btn-dark btn-lg px-4 py-3 rounded-4 shadow-sm fw-semibold"
+                    >
+
+                        <i class="bi bi-shield-lock me-2"></i>
+
+                        Admin Login
+
+                    </a>
+
+                    <a
+                        href="{% url 'student-signup' %}"
+                        class="btn btn-success btn-lg px-4 py-3 rounded-4 shadow-sm fw-semibold"
+                    >
+
+                        <i class="bi bi-person-plus me-2"></i>
+
+                        Signup
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT IMAGE -->
+
+            <div class="col-lg-6 text-center mt-5 mt-lg-0">
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png"
+                    class="img-fluid hero-image"
+                    alt="Hostel Management"
+                >
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FEATURES -->
+
+    <section class="py-5">
+
+        <div class="text-center mb-5">
+
+            <h2 class="fw-bold display-5">
+
+                Core Features
+
+            </h2>
+
+            <p class="text-muted fs-5">
+
+                Everything needed for hostel administration
+
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- FEATURE 1 -->
+
+            <div class="col-md-4">
+
+                <div class="feature-card shadow-sm h-100">
+
+                    <div class="feature-icon bg-primary">
+
+                        <i class="bi bi-people-fill"></i>
+
+                    </div>
+
+                    <h4 class="fw-bold mt-4">
+
+                        Student Management
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        Easily manage student admissions,
+                        profiles, and records.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- FEATURE 2 -->
+
+            <div class="col-md-4">
+
+                <div class="feature-card shadow-sm h-100">
+
+                    <div class="feature-icon bg-success">
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+                    <h4 class="fw-bold mt-4">
+
+                        Room Allocation
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        Efficient room allocation and
+                        hostel bed management.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- FEATURE 3 -->
+
+            <div class="col-md-4">
+
+                <div class="feature-card shadow-sm h-100">
+
+                    <div class="feature-icon bg-danger">
+
+                        <i class="bi bi-chat-left-text-fill"></i>
+
+                    </div>
+
+                    <h4 class="fw-bold mt-4">
+
+                        Complaint System
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        Students can raise complaints
+                        and admins can resolve quickly.
+
+                    </p>
 
                 </div>
 
@@ -26,15 +215,113 @@
 
         </div>
 
-        <div class="col-md-3">
+    </section>
 
-            <div class="card bg-success text-white mb-4">
+    {% endif %}
 
-                <div class="card-body">
+    <!-- ========================= -->
+    <!-- AUTHENTICATED DASHBOARD -->
+    <!-- ========================= -->
 
-                    <h3>{{ total_rooms }}</h3>
+    {% if user.is_authenticated %}
 
-                    <p>Total Rooms</p>
+    <section class="py-3">
+
+        <div class="mb-5">
+
+            <h1 class="display-5 fw-bold mb-2">
+
+                Dashboard
+
+            </h1>
+
+            <p class="text-muted fs-5">
+
+                Welcome back, {{ user.username }}
+
+            </p>
+
+        </div>
+
+        <!-- DASHBOARD STATS -->
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card bg-primary text-white">
+
+                    <h1 class="fw-bold">
+
+                        {{ total_students }}
+
+                    </h1>
+
+                    <p class="mb-0">
+
+                        Total Students
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card bg-success text-white">
+
+                    <h1 class="fw-bold">
+
+                        {{ total_rooms }}
+
+                    </h1>
+
+                    <p class="mb-0">
+
+                        Total Rooms
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card bg-warning text-dark">
+
+                    <h1 class="fw-bold">
+
+                        {{ total_allocations }}
+
+                    </h1>
+
+                    <p class="mb-0">
+
+                        Total Allocations
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card bg-danger text-white">
+
+                    <h1 class="fw-bold">
+
+                        {{ available_beds }}
+
+                    </h1>
+
+                    <p class="mb-0">
+
+                        Available Beds
+
+                    </p>
 
                 </div>
 
@@ -42,40 +329,93 @@
 
         </div>
 
-        <div class="col-md-3">
+    </section>
 
-            <div class="card bg-warning text-dark mb-4">
-
-                <div class="card-body">
-
-                    <h3>{{ total_allocations }}</h3>
-
-                    <p>Total Allocations</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card bg-danger text-white mb-4">
-
-                <div class="card-body">
-
-                    <h3>{{ available_beds }}</h3>
-
-                    <p>Available Beds</p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+    {% endif %}
 
 </div>
+
+<style>
+
+    body {
+
+        background: #f5f7fb;
+
+    }
+
+    .min-vh-75 {
+
+        min-height: 75vh;
+
+    }
+
+    .hero-image {
+
+        max-width: 85%;
+        animation: float 4s ease-in-out infinite;
+
+    }
+
+    @keyframes float {
+
+        0% {
+
+            transform: translateY(0px);
+
+        }
+
+        50% {
+
+            transform: translateY(-10px);
+
+        }
+
+        100% {
+
+            transform: translateY(0px);
+
+        }
+
+    }
+
+    .feature-card {
+
+        background: white;
+        border-radius: 22px;
+        padding: 35px 25px;
+        text-align: center;
+        transition: 0.3s;
+
+    }
+
+    .feature-card:hover {
+
+        transform: translateY(-8px);
+
+    }
+
+    .feature-icon {
+
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 30px;
+        margin: auto;
+
+    }
+
+    .dashboard-card {
+
+        border-radius: 24px;
+        padding: 35px 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+
+    }
+
+</style>
 
 {% endblock %}

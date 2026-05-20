@@ -6,27 +6,139 @@ Allocate Room
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container-fluid py-5">
 
-    <h1 class="text-center mb-4">
-        Allocate Room
-    </h1>
+    <div class="row justify-content-center">
 
-    <form method="POST">
+        <div class="col-lg-6 col-md-8">
 
-        {% csrf_token %}
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-        {{ form.as_p }}
+                <!-- Header -->
 
-        <button
-            type="submit"
-            class="btn btn-primary"
-        >
-            Allocate Room
-        </button>
+                <div class="bg-primary text-white text-center py-4">
 
-    </form>
+                    <h1 class="fw-bold mb-1">
+
+                        <i class="bi bi-building-check me-2"></i>
+                        Allocate Room
+
+                    </h1>
+
+                    <p class="mb-0">
+
+                        Assign hostel rooms to students efficiently
+
+                    </p>
+
+                </div>
+
+                <!-- Form -->
+
+                <div class="card-body p-4">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <!-- Student -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Student
+
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text bg-light">
+
+                                    <i class="bi bi-person-fill"></i>
+
+                                </span>
+
+                                {{ form.student }}
+
+                            </div>
+
+                        </div>
+
+                        <!-- Room -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+
+                                Room
+
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text bg-light">
+
+                                    <i class="bi bi-door-open-fill"></i>
+
+                                </span>
+
+                                {{ form.room }}
+
+                            </div>
+
+                        </div>
+
+                        <!-- Button -->
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100 py-2 rounded-3 fw-semibold"
+                        >
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Allocate Room
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
+
+<style>
+
+    input,
+    select {
+
+        height: 50px !important;
+        border-radius: 10px !important;
+        border: 1px solid #dcdcdc !important;
+        box-shadow: none !important;
+
+    }
+
+    input:focus,
+    select:focus {
+
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 0.15rem rgba(37, 99, 235, 0.15) !important;
+
+    }
+
+    .input-group-text {
+
+        border-radius: 10px 0 0 10px !important;
+
+    }
+
+</style>
 
 {% endblock content %}

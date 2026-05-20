@@ -203,18 +203,15 @@ class FeeForm(forms.ModelForm):
                 }
             ),
 
-            "status": forms.Select(
-                choices=[
-
-                    ("pending", "Pending"),
-                    ("paid", "Paid"),
-
-                ],
-                attrs={
-                    "class": "form-control"
-                }
-            ),
-
+            'status': forms.Select(
+    choices=[
+        ('Pending', 'Pending'),
+        ('Paid', 'Paid'),
+    ],
+    attrs={
+        'class': 'form-select'
+    }
+),
             "student": forms.Select(
                 attrs={
                     "class": "form-control"

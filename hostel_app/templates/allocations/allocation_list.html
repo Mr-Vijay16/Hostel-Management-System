@@ -6,138 +6,243 @@ Allocation List
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container-fluid py-4">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- HEADER -->
 
-    <h1>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
-        Allocation List
+        <div>
 
-    </h1>
+            <h1 class="fw-bold display-5 mb-1 text-dark">
+                Allocation List
+            </h1>
 
-    <a
-        href="{% url 'allocate-room' %}"
-        class="btn btn-primary"
-    >
+            <p class="text-muted fs-5 mb-0">
+                Manage allocated hostel rooms
+            </p>
 
-        Add Allocation
+        </div>
 
-    </a>
+        <a
+            href="{% url 'allocate-room' %}"
+            class="btn btn-primary px-4 py-3 rounded-4 fw-semibold shadow-sm"
+        >
+
+            <i class="bi bi-plus-circle me-2"></i>
+            Add Allocation
+
+        </a>
+
+    </div>
+
+    <!-- TABLE CARD -->
+
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+        <div class="table-responsive">
+
+            <table class="table align-middle mb-0">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th class="py-4 px-4">
+                            Sl.No
+                        </th>
+
+                        <th class="py-4">
+                            Room
+                        </th>
+
+                        <th class="py-4">
+                            Allocated Students
+                        </th>
+
+                        <th class="py-4">
+                            Date
+                        </th>
+
+                        <th class="py-4 text-center">
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for room, allocations in grouped_allocations.items %}
+
+                    <tr>
+
+                        <!-- SERIAL NUMBER -->
+
+                        <td class="px-4 fw-semibold">
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+                        <!-- ROOM -->
+
+                        <td>
+
+                            <span class="badge room-badge">
+
+                                Room {{ room.room_number }}
+
+                            </span>
+
+                        </td>
+
+                        <!-- STUDENT COUNT -->
+
+                        <td>
+
+                            <span class="badge student-badge">
+
+                                {{ allocations|length }} Students Allocated
+
+                            </span>
+
+                        </td>
+
+                        <!-- DATE -->
+
+                        <td class="text-muted fw-semibold">
+
+                            {{ allocations.0.allocation_date }}
+
+                        </td>
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+                            <div class="d-flex gap-2 justify-content-center flex-wrap">
+
+                                <a
+                                    href="{% url 'allocation-details' allocations.0.id %}"
+                                    class="btn btn-primary btn-sm px-3 py-2 rounded-3"
+                                >
+                                    <i class="bi bi-eye me-1"></i>
+                                    View
+                                </a>
+
+                                <a
+                                    href="{% url 'update-allocation' allocations.0.id %}"
+                                    class="btn btn-success btn-sm px-3 py-2 rounded-3"
+                                >
+                                    <i class="bi bi-pencil-square me-1"></i>
+                                    Update
+                                </a>
+
+                                <a
+                                    href="{% url 'delete-allocation' allocations.0.id %}"
+                                    class="btn btn-danger btn-sm px-3 py-2 rounded-3"
+                                >
+                                    <i class="bi bi-trash me-1"></i>
+                                    Delete
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="text-center py-5 text-muted fs-5"
+                        >
+
+                            No allocations found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
-    <table class="table table-bordered">
+<style>
 
-        <thead class="table-dark">
+    .table th {
 
-            <tr>
-                <th>Sl.NO</th>
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        border: none;
 
-                <th>Student ID</th>
-                <th>Student Name</th>
-                <th>Room</th>
-                <th>Date</th>
-                <th>Action</th>
+    }
 
-            </tr>
+    .table td {
 
-        </thead>
+        vertical-align: middle;
+        padding-top: 22px;
+        padding-bottom: 22px;
+        border-color: #eef2f7;
 
-        <tbody>
+    }
 
-            {% for allocation in page_obj %}
+    .card {
 
-            <tr>
-                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+        background: #ffffff;
 
-                <td>{{ allocation.student.student_id }}</td>
+    }
 
-                <td>{{ allocation.student }}</td>
+    .room-badge {
 
-                <td>{{ allocation.room }}</td>
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 14px;
+        font-size: 15px;
+        font-weight: 600;
 
-                <td>{{ allocation.allocation_date }}</td>
-                <td>
+    }
 
-    <a
-        href="{% url 'allocation-details' allocation.id %}"
-        class="btn btn-primary btn-sm"
-    >
-        View
-    </a>
+    .student-badge {
 
-    <a
-        href="{% url 'update-allocation' allocation.id %}"
-        class="btn btn-success btn-sm"
-    >
-        Update
-    </a>
+        background: #eef4ff;
+        color: #2563eb;
+        padding: 12px 18px;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid #dbe7ff;
 
-    <a
-        href="{% url 'delete-allocation' allocation.id %}"
-        class="btn btn-danger btn-sm"
-    >
-        Delete
-    </a>
+    }
 
-</td>
+    .btn {
 
-            </tr>
+        font-weight: 600;
 
-            {% endfor %}
+    }
 
-        </tbody>
+    .table tbody tr:hover {
 
-    </table>
-    <div class="text-center mt-4">
+        background: #fafcff;
+        transition: 0.2s ease;
 
-    {% if page_obj.has_previous %}
+    }
 
-        <a
-            href="?page=1"
-            class="btn btn-dark"
-        >
-            First
-        </a>
-
-        <a
-            href="?page={{ page_obj.previous_page_number }}"
-            class="btn btn-primary"
-        >
-            Previous
-        </a>
-
-    {% endif %}
-
-    <span class="mx-3 fw-bold">
-
-        Page {{ page_obj.number }}
-        of
-        {{ page_obj.paginator.num_pages }}
-
-    </span>
-
-    {% if page_obj.has_next %}
-
-        <a
-            href="?page={{ page_obj.next_page_number }}"
-            class="btn btn-primary"
-        >
-            Next
-        </a>
-
-        <a
-            href="?page={{ page_obj.paginator.num_pages }}"
-            class="btn btn-dark"
-        >
-            Last
-        </a>
-
-    {% endif %}
-
-</div>
-
-</div>
+</style>
 
 {% endblock content %}
