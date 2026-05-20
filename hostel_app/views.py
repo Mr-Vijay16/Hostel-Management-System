@@ -1,93 +1,77 @@
-from django.shortcuts import render,redirect
-from .forms import StudentForm
-from .models import Student
-from django.shortcuts import get_object_or_404
-from .models import Student, Room
-from .forms import StudentForm, RoomForm
-from .forms import RoomAllocationForm
-from .models import RoomAllocation
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.db import models
-from .models import Fee
-from .forms import FeeForm
-from .models import Complaint
-from .forms import ComplaintForm
-from django.http import JsonResponse
-from django.contrib.auth.models import User
-from .forms import StudentSignupForm
-from .models import Student
-from .models import StudentAccount
-from django.core.paginator import Paginator
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from rest_framework.decorators import api_view
-
-from .models import RoomAllocation
-
-from .serializers import RoomAllocationSerializer
-
-from rest_framework.response import Response
-
-from rest_framework import status
-
-from .serializers import StudentSerializer
-
-from .serializers import StudentSerializer, RoomSerializer
-
-from .serializers import ComplaintSerializer
-
-from .models import Fee
-
-from .serializers import FeeSerializer
-
-
-from django.contrib.auth import authenticate, login, logout
-
-from rest_framework.decorators import api_view
-
-from rest_framework.response import Response
-
-from rest_framework import status
-
-from rest_framework_simplejwt.tokens import RefreshToken
-
-from rest_framework.permissions import IsAuthenticated
-
-from rest_framework.decorators import (
-    api_view,
-    permission_classes
-)
-
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-
 from collections import defaultdict
 
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404
+)
 
+from django.http import JsonResponse
 
-from django.contrib.auth import authenticate
+from django.contrib import messages
+
+from django.contrib.auth import (
+    authenticate,
+    login,
+    logout,
+    update_session_auth_hash
+)
+
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.forms import PasswordChangeForm
+
+from django.contrib.auth.models import User
+
 from django.db import models
+
+from django.core.paginator import Paginator
 
 from rest_framework.decorators import (
     api_view,
     permission_classes
 )
+
 from rest_framework.permissions import (
-    IsAuthenticated,
-    AllowAny
+    AllowAny,
+    IsAuthenticated
 )
+
 from rest_framework.response import Response
+
 from rest_framework import status
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import *
-from .serializers import *
 
+# MODELS
+from .models import (
+    Student,
+    Room,
+    RoomAllocation,
+    Fee,
+    Complaint,
+    StudentAccount
+)
 
+# FORMS
+from .forms import (
+    StudentForm,
+    RoomForm,
+    RoomAllocationForm,
+    FeeForm,
+    ComplaintForm,
+    StudentSignupForm
+)
+
+# SERIALIZERS
+from .serializers import (
+    StudentSerializer,
+    RoomSerializer,
+    RoomAllocationSerializer,
+    FeeSerializer,
+    ComplaintSerializer
+)
 
 
 
